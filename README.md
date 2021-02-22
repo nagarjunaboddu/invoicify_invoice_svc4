@@ -26,3 +26,5 @@ Pull requests should contain small changes. They are easier and faster to review
 When you select these options, the project board will automatically be updated to reflect your progress. [Here's an demonstration.](https://imgur.com/zpLEc3R)
 
 ![](https://imgur.com/zpLEc3R)
+
+Updated read me file
