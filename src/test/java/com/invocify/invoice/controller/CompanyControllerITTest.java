@@ -1,7 +1,7 @@
-package com.invocify.invoice.controller.it;
+package com.invocify.invoice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.invocify.invoice.model.Company;
+import com.invocify.invoice.entity.Company;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CompanyControllerTest {
+public class CompanyControllerITTest {
 
         @Autowired
         MockMvc mockMvc;
@@ -26,7 +26,7 @@ public class CompanyControllerTest {
         @Test
         public void createCompanyTest_success() throws Exception {
                 Company company =  Company.builder().name("Amazon").address("233 Siliconvalley, CA").build();
-            mockMvc.perform(post("/api/v1/company")
+            mockMvc.perform(post("/api/v1/invocify/companies")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(company)))
                     .andExpect(status().isCreated())
