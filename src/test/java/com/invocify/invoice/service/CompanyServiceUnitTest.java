@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CompanyServiceUnitTest {
@@ -42,5 +42,6 @@ public class CompanyServiceUnitTest {
        assertNotNull(actual.getId());
        assertEquals("Amazon", actual.getName());
        assertEquals("233 Siliconvalley, CA", actual.getAddress());
+      verify(companyRepository, times(1)).save(any(Company.class));
    }
 }

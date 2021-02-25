@@ -11,11 +11,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CompanyService {
 
-   private CompanyRepository repo;
+   private CompanyRepository companyRepository;
 
 
 
     public Company createCompany(Company company) {
-        return repo.save(company);
+        return companyRepository.save(company);
     }
 }
