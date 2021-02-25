@@ -5,8 +5,7 @@ import com.invocify.invoice.helper.HelperClass;
 
 
 import com.invocify.invoice.repository.CompanyRepository;
-import javafx.scene.canvas.GraphicsContext;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
