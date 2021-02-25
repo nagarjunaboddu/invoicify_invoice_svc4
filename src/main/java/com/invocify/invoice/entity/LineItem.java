@@ -1,11 +1,15 @@
 package com.invocify.invoice.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -21,5 +25,10 @@ public class LineItem {
     private String description;
     private BigDecimal rate;
     private String rateType;
+    private Integer quantity;
+
+    public BigDecimal getTotalFees() {
+        return rateType.equals("flat")? rate: rate.multiply(new BigDecimal(quantity));
+    }
 
 }

@@ -24,7 +24,7 @@ public class LineItemServiceTest {
     }
 
     @Test
-    public void createLineItem() {
+    public void createLineItem_flatRate() {
 
         LineItem expectedLineItem = LineItem.builder()
                 .description("tdd")
@@ -37,6 +37,27 @@ public class LineItemServiceTest {
 
         LineItem actualLineItem = lineItemService.createLineItem(expectedLineItem);
         assertEquals(expectedLineItem, actualLineItem);
+        assertEquals(expectedLineItem.getRate(), actualLineItem.getTotalFees());
+        verify(lineItemRepository, times(1)).save(any(LineItem.class));
+
+    }
+
+    @Test
+    public void createLineItem_RateBased() {
+
+        LineItem expectedLineItem = LineItem.builder()
+                .description("tdd")
+                .rate(new BigDecimal(10))
+                .rateType("rate")
+                .quantity(2)
+                .id(UUID.randomUUID())
+                .build();
+
+        when(lineItemRepository.save(any(LineItem.class))).thenReturn(expectedLineItem);
+
+        LineItem actualLineItem = lineItemService.createLineItem(expectedLineItem);
+        assertEquals(expectedLineItem, actualLineItem);
+        assertEquals(expectedLineItem.getRate().multiply(new BigDecimal(expectedLineItem.getQuantity())), actualLineItem.getTotalFees());
         verify(lineItemRepository, times(1)).save(any(LineItem.class));
 
     }
