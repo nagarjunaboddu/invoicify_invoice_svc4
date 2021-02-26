@@ -1,4 +1,4 @@
-package com.invocify.invoice.services;
+package com.invocify.invoice.service;
 
 import com.invocify.invoice.entity.LineItem;
 import com.invocify.invoice.repository.LineItemRepository;
