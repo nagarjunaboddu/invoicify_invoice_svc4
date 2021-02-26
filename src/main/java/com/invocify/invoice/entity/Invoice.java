@@ -11,12 +11,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -32,8 +36,13 @@ public class Invoice {
 	
 	//TODO: add the annotation relationship once Company is declared as an entity
 	@ManyToOne
+	@Setter
 	private Company company;
 	private String author;
+	
+	@Transient
+	@JsonIgnore
+	private UUID company_id;
 	
 	@Temporal(TemporalType.DATE)
 	private Date createdDate;
