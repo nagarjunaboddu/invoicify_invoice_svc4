@@ -1,7 +1,8 @@
-package com.invocify.invoice.services;
+package com.invocify.invoice.service;
 
 import com.invocify.invoice.entity.LineItem;
 import com.invocify.invoice.repository.LineItemRepository;
+import com.invocify.invoice.service.LineItemService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
