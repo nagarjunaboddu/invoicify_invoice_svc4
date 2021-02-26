@@ -11,6 +11,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class InvoiceService {
 	
+	/** 
+	 * repository is getting injected using constructor provided by  
+	 * lombok.AllArgsConstructor
+     */
 	InvoiceRepository invoiceRepository;
 
 	public Invoice createInvoice(Invoice invoice) {

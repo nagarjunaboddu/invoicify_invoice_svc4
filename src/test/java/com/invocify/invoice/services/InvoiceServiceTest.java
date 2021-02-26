@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -44,6 +45,7 @@ public class InvoiceServiceTest {
 		Invoice actualInvoice = invoiceService.createInvoice(expectedInvoice);
 		
 		assertEquals(expectedInvoice, actualInvoice);
+		assertEquals(BigDecimal.ZERO,actualInvoice.getTotalCost());
 		
 		verify(invoiceRepository, times(1)).save(Mockito.any(Invoice.class));
 	}

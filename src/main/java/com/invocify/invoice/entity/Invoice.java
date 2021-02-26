@@ -30,6 +30,7 @@ public class Invoice {
 	@Hidden
 	private UUID id;
 	
+	//TODO: add the annotation relationship once Company is declared as an entity
 	@ManyToOne
 	private Company company;
 	private String author;
@@ -46,7 +47,7 @@ public class Invoice {
 		this.createdDate = new Date();
 	}
 
-	private BigDecimal getTotalCost() {
+	public BigDecimal getTotalCost() {
 		return BigDecimal.ZERO;
 	}
 }
