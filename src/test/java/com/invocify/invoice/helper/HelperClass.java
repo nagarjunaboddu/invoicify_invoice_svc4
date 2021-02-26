@@ -1,10 +1,10 @@
 package com.invocify.invoice.helper;
 
-import com.invocify.invoice.entity.Company;
-import com.invocify.invoice.entity.Invoice;
-
 import java.util.Date;
 import java.util.UUID;
+
+import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.entity.Invoice;
 
 public class HelperClass {
 
@@ -22,8 +22,8 @@ public class HelperClass {
 	}
 
 	public static Invoice expectedInvoice(Company expectedCompany) {
-		return Invoice.builder().author("tech guy").company(expectedCompany)
-				.createdDate(new Date()).id(UUID.randomUUID()).build();
+		return Invoice.builder().author("tech guy").company(expectedCompany).createdDate(new Date())
+				.id(UUID.randomUUID()).build();
 	}
-	
+
 }

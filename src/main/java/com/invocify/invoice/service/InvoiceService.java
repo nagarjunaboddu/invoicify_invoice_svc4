@@ -1,4 +1,4 @@
-package com.invocify.invoice.services;
+package com.invocify.invoice.service;
 
 import org.springframework.stereotype.Service;
 

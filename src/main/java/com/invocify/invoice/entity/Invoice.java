@@ -34,12 +34,15 @@ public class Invoice {
 	@Hidden
 	private UUID id;
 	
-	//TODO: add the annotation relationship once Company is declared as an entity
 	@ManyToOne
 	@Setter
 	private Company company;
 	private String author;
 	
+	/**
+	 * company_id is used only one of  request attribute
+	 * TODO : separate the request and entity layer
+	 */
 	@Transient
 	@JsonIgnore
 	private UUID company_id;
@@ -48,8 +51,8 @@ public class Invoice {
 	private Date createdDate;
 	
 	
-	/*
-	 * Initialize date before saving the entity
+	/**
+	 * Initializes date before saving the entity
 	 */
 	@PrePersist
 	private void prePersist() {

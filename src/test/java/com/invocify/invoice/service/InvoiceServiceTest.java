@@ -1,4 +1,4 @@
-package com.invocify.invoice.services;
+package com.invocify.invoice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,11 +40,13 @@ public class InvoiceServiceTest {
 		Company expectedCompany = HelperClass.expectedCompany();
 		Invoice expectedInvoice = HelperClass.expectedInvoice(expectedCompany);		
 		
+		//mocked repositories
 		when(companyRepository.findById(Mockito.any(UUID.class))).thenReturn(Optional.of(expectedCompany));
 		when(invoiceRepository.save(Mockito.any(Invoice.class))).thenReturn(expectedInvoice);
 		
 		Invoice actualInvoice = invoiceService.createInvoice(HelperClass.requestInvoice(expectedInvoice));
 		
+		//asserts
 		assertEquals(expectedInvoice, actualInvoice);
 		assertEquals(expectedCompany, actualInvoice.getCompany());
 		assertEquals(BigDecimal.ZERO,actualInvoice.getTotalCost());
@@ -52,6 +54,7 @@ public class InvoiceServiceTest {
 		assertNotNull(actualInvoice.getId());
 		assertNotNull(actualInvoice.getCreatedDate());
 		
+		//verify mock usage
 		verify(companyRepository, times(1)).findById(Mockito.any(UUID.class));
 		verify(invoiceRepository, times(1)).save(Mockito.any(Invoice.class));
 	}
