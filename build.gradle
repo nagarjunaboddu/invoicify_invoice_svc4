@@ -38,6 +38,16 @@ test {
 
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/invocify/invoice/entity/**',
+                    'com/invocify/invoice/repository/**',
+                    'com/invocify/invoice/model/**',
+                    'com/invocify/invoice/InvoiceServiceApplication**',
+            ])
+        }))
+    }
 }
 
 jacocoTestCoverageVerification {
