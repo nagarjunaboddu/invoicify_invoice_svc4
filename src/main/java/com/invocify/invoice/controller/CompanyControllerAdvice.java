@@ -23,7 +23,7 @@ public class CompanyControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<String> handleNotFound(MethodArgumentNotValidException methodArgumentNotValidException) throws Exception {
-        List <String> result = methodArgumentNotValidException.getAllErrors().stream().map(ObjectError :: getDefaultMessage
+        List<String> result = methodArgumentNotValidException.getAllErrors().stream().map(ObjectError :: getDefaultMessage
         ).collect(Collectors.toList());
         Collections.sort(result);
         return result;
