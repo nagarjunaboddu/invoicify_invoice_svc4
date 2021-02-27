@@ -33,8 +33,8 @@ public class InvoiceControllerITTest {
     @Test
     public void createInvoice() throws Exception {
 
-        Company expectedCompany = companyRepository.save(HelperClass.requestCompany());
-        Invoice invoice = HelperClass.expectedInvoice(expectedCompany);
+        Company company = companyRepository.save(HelperClass.requestCompany());
+        Invoice invoice = HelperClass.expectedInvoice(company);
         InvoiceRequest requestInvoice = HelperClass.requestInvoice(invoice);
 
         mockMvc.perform(post("/api/v1/invocify/invoices")
@@ -42,12 +42,12 @@ public class InvoiceControllerITTest {
                 .content(mapper.writeValueAsString(requestInvoice)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.author").value(invoice.getAuthor()))
+                .andExpect(jsonPath("$.author").value(requestInvoice.getAuthor()))
                 .andExpect(jsonPath("$.createdDate").exists())
                 .andExpect(jsonPath("$.totalCost").value(0))
-                .andExpect(jsonPath("$.company.id").value(expectedCompany.getId().toString()))
-                .andExpect(jsonPath("$.company.name").value(expectedCompany.getName()))
-                .andExpect(jsonPath("$.company.address").value(expectedCompany.getAddress()));
+                .andExpect(jsonPath("$.company.id").value(company.getId().toString()))
+                .andExpect(jsonPath("$.company.name").value(company.getName()))
+                .andExpect(jsonPath("$.company.address").value(company.getAddress()));
 
     }
 }
