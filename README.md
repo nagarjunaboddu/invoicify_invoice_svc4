@@ -1,4 +1,6 @@
 # Capstone Team Project
+![Build and Deploy status](https://github.com/Tech-Student-Labs/invoicify_invoice_svc4/actions/workflows/heroku.yml/badge.svg)
+![Test status](https://github.com/Tech-Student-Labs/invoicify_invoice_svc4/actions/workflows/gradle.yml/badge.svg)
 
 * [Learn Dashboard](https://learn-2.galvanize.com/cohorts/2328)
 * [Project Board](https://github.com/orgs/Tech-Student-Labs/projects)
