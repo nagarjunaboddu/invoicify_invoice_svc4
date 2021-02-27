@@ -44,7 +44,6 @@ public class Invoice {
 	 * TODO : separate the request and entity layer
 	 */
 	@Transient
-	@JsonIgnore
 	private UUID company_id;
 	
 	@Temporal(TemporalType.DATE)

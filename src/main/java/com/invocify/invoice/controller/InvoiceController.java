@@ -1,6 +1,7 @@
 package com.invocify.invoice.controller;
 
 import com.invocify.invoice.entity.Invoice;
+import com.invocify.invoice.service.InvoiceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Invoice")
 public class InvoiceController {
 
+    private InvoiceService invoiceService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createInvoice(@RequestBody Invoice invoice) {
-
+    public Invoice createInvoice(@RequestBody Invoice invoice) {
+        return invoiceService.createInvoice(invoice);
     }
 }
