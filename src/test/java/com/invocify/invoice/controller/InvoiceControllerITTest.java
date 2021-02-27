@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
 import com.invocify.invoice.helper.HelperClass;
+import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.repository.CompanyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +35,11 @@ public class InvoiceControllerITTest {
 
         Company expectedCompany = companyRepository.save(HelperClass.requestCompany());
         Invoice invoice = HelperClass.expectedInvoice(expectedCompany);
-        Invoice invoice1 = HelperClass.requestInvoice(invoice);
+        InvoiceRequest requestInvoice = HelperClass.requestInvoice(invoice);
 
         mockMvc.perform(post("/api/v1/invocify/invoices")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(invoice1)))
+                .content(mapper.writeValueAsString(requestInvoice)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.author").value(invoice.getAuthor()))

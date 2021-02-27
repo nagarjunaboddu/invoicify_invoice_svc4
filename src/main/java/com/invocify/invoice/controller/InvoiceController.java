@@ -1,6 +1,7 @@
 package com.invocify.invoice.controller;
 
 import com.invocify.invoice.entity.Invoice;
+import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.service.InvoiceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class InvoiceController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Invoice createInvoice(@RequestBody Invoice invoice) {
-        return invoiceService.createInvoice(invoice);
+    public Invoice createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
+        return invoiceService.createInvoice(invoiceRequest);
     }
 }
