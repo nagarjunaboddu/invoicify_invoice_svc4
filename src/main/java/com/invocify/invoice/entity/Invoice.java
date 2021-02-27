@@ -38,17 +38,15 @@ public class Invoice {
 	@Setter
 	private Company company;
 	private String author;
-	
-	/**
-	 * company_id is used only one of  request attribute
-	 * TODO : separate the request and entity layer
-	 */
-	@Transient
-	@JsonIgnore
-	private UUID company_id;
+
 	
 	@Temporal(TemporalType.DATE)
 	private Date createdDate;
+
+	public Invoice(String author, Company company) {
+		this.author = author;
+		this.company = company;
+	}
 	
 	
 	/**

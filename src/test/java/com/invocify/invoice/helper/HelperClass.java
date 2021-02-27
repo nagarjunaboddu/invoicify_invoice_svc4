@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
+import com.invocify.invoice.model.InvoiceRequest;
 
 public class HelperClass {
 
@@ -16,8 +17,8 @@ public class HelperClass {
 		return Company.builder().id(UUID.randomUUID()).name("Amazon").address("233 Siliconvalley, CA").build();
 	}
 
-	public static Invoice requestInvoice(Invoice expectedInvoice) {
-		return Invoice.builder().author(expectedInvoice.getAuthor()).company_id(expectedInvoice.getCompany().getId())
+	public static InvoiceRequest requestInvoice(Invoice expectedInvoice) {
+		return InvoiceRequest.builder().author(expectedInvoice.getAuthor()).company_id(expectedInvoice.getCompany().getId())
 				.build();
 	}
 
@@ -25,5 +26,6 @@ public class HelperClass {
 		return Invoice.builder().author("tech guy").company(expectedCompany).createdDate(new Date())
 				.id(UUID.randomUUID()).build();
 	}
+
 
 }
