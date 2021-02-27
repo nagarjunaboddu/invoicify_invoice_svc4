@@ -1,6 +1,7 @@
 package com.invocify.invoice.service;
 
 import com.invocify.invoice.entity.Company;
+
 import com.invocify.invoice.helper.HelperClass;
 
 
@@ -35,7 +36,7 @@ public class CompanyServiceUnitTest {
 
 
    @Test
-    public void createCompany(){
+    public void createCompany() {
        when(companyRepository.save(any(Company.class))).thenReturn((HelperClass.expectedCompany()));
        Company actual = companyService.createCompany(HelperClass.requestCompany());
 
