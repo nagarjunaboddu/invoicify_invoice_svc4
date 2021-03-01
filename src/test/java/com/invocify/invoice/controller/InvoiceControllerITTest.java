@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,7 +43,22 @@ public class InvoiceControllerITTest {
         mockMvc.perform(post("/api/v1/invocify/invoices")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(requestInvoice)))
-                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.[0]").value("Atleast one line item should be present"));
+
+    }
+
+    @Test
+    public void createInvoicewithEmptyLineItems() throws Exception {
+
+        Company company = companyRepository.save(HelperClass.requestCompany());
+        Invoice invoice = HelperClass.expectedInvoice(company);
+        InvoiceRequest requestInvoice = HelperClass.requestInvoice(invoice);
+        requestInvoice.setLineItems(new ArrayList<>());
+        mockMvc.perform(post("/api/v1/invocify/invoices")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(requestInvoice)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$.[0]").value("Atleast one line item should be present"));
