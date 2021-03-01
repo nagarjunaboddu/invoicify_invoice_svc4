@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,7 +32,7 @@ public class InvoiceControllerITTest {
     CompanyRepository companyRepository;
 
     @Test
-    public void createInvoice() throws Exception {
+    public void createInvoicewithoutLineItem() throws Exception {
 
         Company company = companyRepository.save(HelperClass.requestCompany());
         Invoice invoice = HelperClass.expectedInvoice(company);
@@ -40,14 +41,12 @@ public class InvoiceControllerITTest {
         mockMvc.perform(post("/api/v1/invocify/invoices")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(requestInvoice)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.author").value(requestInvoice.getAuthor()))
-                .andExpect(jsonPath("$.createdDate").exists())
-                .andExpect(jsonPath("$.totalCost").value(0))
-                .andExpect(jsonPath("$.company.id").value(company.getId().toString()))
-                .andExpect(jsonPath("$.company.name").value(company.getName()))
-                .andExpect(jsonPath("$.company.address").value(company.getAddress()));
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.[0]").value("Atleast one line item should be present"));
 
     }
+
+
 }
