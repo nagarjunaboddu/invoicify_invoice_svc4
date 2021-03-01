@@ -9,71 +9,102 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class CompanyControllerITTest {
 
-        @Autowired
-        MockMvc mockMvc;
+    @Autowired
+    MockMvc mockMvc;
 
-        @Autowired
-        ObjectMapper mapper;
+    @Autowired
+    ObjectMapper mapper;
 
-        @Test
-        public void createCompanyTest_success() throws Exception {
-                Company company =  Company.builder().name("Amazon").address("233 Siliconvalley, CA").build();
-            mockMvc.perform(post("/api/v1/invocify/companies")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(company)))
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.id").exists())
-                    .andExpect(jsonPath("$.name").value("Amazon"))
-                    .andExpect(jsonPath("$.address").value("233 Siliconvalley, CA"));
+    @Test
+    public void createCompanyTest_success() throws Exception {
+        Company company = Company.builder().name("Amazon").address("233 Siliconvalley, CA").build();
+        mockMvc.perform(post("/api/v1/invocify/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(company)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Amazon"))
+                .andExpect(jsonPath("$.address").value("233 Siliconvalley, CA"));
 
-        }
+    }
 
-        @Test
-        public void createCompanyTest_unSuccessful_NoName() throws Exception {
-                Company company =  Company.builder().address("233 Siliconvalley, CA").build();
-                mockMvc.perform(post("/api/v1/invocify/companies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(company)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.length()").value(1))
-                        .andExpect(jsonPath("$[0]").value("Name cannot be empty"))
-                ;
+    @Test
+    public void createCompanyTest_unSuccessful_NoName() throws Exception {
+        Company company = Company.builder().address("233 Siliconvalley, CA").build();
+        mockMvc.perform(post("/api/v1/invocify/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(company)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0]").value("Name cannot be empty"))
+        ;
 
-        }
-        @Test
-        public void createCompanyTest_unSuccessful_NoAddress() throws Exception {
-                Company company =  Company.builder().name("Amazon").build();
-                mockMvc.perform(post("/api/v1/invocify/companies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(company)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.length()").value(1))
-                        .andExpect(jsonPath("$[0]").value("Address cannot be empty"))
-                ;
+    }
 
-        }
-        @Test
-        public void createCompanyTest_unSuccessful_NoAddressNoName() throws Exception {
-                Company company =  Company.builder().build();
-                mockMvc.perform(post("/api/v1/invocify/companies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(company)))
-                        .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.length()").value(2))
-                        .andExpect(jsonPath("$[0]").value("Address cannot be empty"))
-                        .andExpect(jsonPath("$[1]").value("Name cannot be empty"))
-                ;
+    @Test
+    public void createCompanyTest_unSuccessful_NoAddress() throws Exception {
+        Company company = Company.builder().name("Amazon").build();
+        mockMvc.perform(post("/api/v1/invocify/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(company)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0]").value("Address cannot be empty"))
+        ;
 
-        }
+    }
 
+    @Test
+    public void createCompanyTest_unSuccessful_NoAddressNoName() throws Exception {
+        Company company = Company.builder().build();
+        mockMvc.perform(post("/api/v1/invocify/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(company)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0]").value("Address cannot be empty"))
+                .andExpect(jsonPath("$[1]").value("Name cannot be empty"))
+        ;
+
+    }
+
+    @Test
+    public void viewCompany() throws Exception {
+
+        Company company = Company.builder().name("Amazon").address("233 Siliconvalley, CA").build();
+        mockMvc.perform(post("/api/v1/invocify/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(company)))
+                .andExpect(status().isCreated());
+
+        Company company1 = Company.builder().name("Apple").address("Washington, CA").build();
+        mockMvc.perform(post("/api/v1/invocify/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(company1)))
+                .andExpect(status().isCreated());
+
+
+        mockMvc.perform(get("/api/v1/invocify/companies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Amazon"))
+                .andExpect(jsonPath("$[0].address").value("233 Siliconvalley, CA"))
+                .andExpect(jsonPath("$[1].name").value("Apple"))
+                .andExpect(jsonPath("$[1].address").value("Washington, CA"));
+
+    }
 
 
 }
