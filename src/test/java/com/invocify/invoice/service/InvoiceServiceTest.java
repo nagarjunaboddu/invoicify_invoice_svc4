@@ -48,7 +48,7 @@ public class InvoiceServiceTest {
         //asserts
         assertEquals(expectedInvoice, actualInvoice);
         assertEquals(expectedCompany, actualInvoice.getCompany());
-        assertEquals(BigDecimal.ZERO, actualInvoice.getTotalCost());
+        assertEquals(BigDecimal.ZERO.setScale(2), actualInvoice.getTotalCost());
         assertNotNull(actualInvoice.getId());
         assertNotNull(actualInvoice.getCreatedDate());
 
