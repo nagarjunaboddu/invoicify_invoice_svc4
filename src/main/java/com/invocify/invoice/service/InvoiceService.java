@@ -27,7 +27,7 @@ public class InvoiceService {
     }
 
     private Invoice buildInvoiceEntity(InvoiceRequest invoiceRequest, Company company) {
-        return new Invoice(invoiceRequest.getAuthor(), company);
+        return new Invoice(invoiceRequest.getAuthor(),  invoiceRequest.getLineItems(),company);
     }
 
 }

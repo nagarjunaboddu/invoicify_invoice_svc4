@@ -3,6 +3,7 @@ package com.invocify.invoice.service;
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
 import com.invocify.invoice.helper.HelperClass;
+import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.repository.CompanyRepository;
 import com.invocify.invoice.repository.InvoiceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,7 +41,9 @@ public class InvoiceServiceTest {
         when(companyRepository.findById(Mockito.any(UUID.class))).thenReturn(Optional.of(expectedCompany));
         when(invoiceRepository.save(Mockito.any(Invoice.class))).thenReturn(expectedInvoice);
 
-        Invoice actualInvoice = invoiceService.createInvoice(HelperClass.requestInvoice(expectedInvoice));
+        InvoiceRequest requestInvoice = HelperClass.requestInvoice(expectedInvoice);
+        requestInvoice.setLineItems(new ArrayList<>());
+        Invoice actualInvoice = invoiceService.createInvoice(requestInvoice);
 
         //asserts
         assertEquals(expectedInvoice, actualInvoice);

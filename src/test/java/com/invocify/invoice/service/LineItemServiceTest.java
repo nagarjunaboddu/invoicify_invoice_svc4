@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +30,7 @@ public class LineItemServiceTest {
 
         LineItem expectedLineItem = LineItem.builder()
                 .description("tdd")
-                .rate(new BigDecimal(10))
+                .rate(new BigDecimal(10.00).setScale(2, RoundingMode.HALF_EVEN))
                 .rateType("flat")
                 .id(UUID.randomUUID())
                 .build();
@@ -48,7 +49,7 @@ public class LineItemServiceTest {
 
         LineItem expectedLineItem = LineItem.builder()
                 .description("tdd")
-                .rate(new BigDecimal(10))
+                .rate(new BigDecimal(10.00).setScale(2, RoundingMode.HALF_EVEN))
                 .rateType("rate")
                 .quantity(2)
                 .id(UUID.randomUUID())
