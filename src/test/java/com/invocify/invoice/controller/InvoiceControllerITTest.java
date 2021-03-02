@@ -103,6 +103,21 @@ public class InvoiceControllerITTest {
                 .andExpect(jsonPath("$.lineItems[1].totalFees").value(41.2));
 
     }
+    
+    @Test
+    public void createInvoiceWithoutCompany() throws Exception {
+
+        //Company company = companyRepository.save(HelperClass.requestCompany());
+    	LineItem lineItem = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3)).rateType("rate").build();
+        InvoiceRequest requestInvoice = InvoiceRequest.builder().author("author").lineItems(new ArrayList<>(){{add(lineItem);}}).build();
+        mockMvc.perform(post("/api/v1/invocify/invoices")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(requestInvoice)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.[0]").value("Invoice should be associated with an existing company"));
+
+    }
 
 
 }
