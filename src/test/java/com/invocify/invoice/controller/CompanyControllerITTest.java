@@ -117,7 +117,7 @@ public class CompanyControllerITTest {
                 .andExpect(status().isCreated());
 
 
-        mockMvc.perform(get("/api/v1/invocify/companies").param("viewType", "simple"))
+        mockMvc.perform(get("/api/v1/invocify/companies").param("includeDetail", "false"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("Amazon"))

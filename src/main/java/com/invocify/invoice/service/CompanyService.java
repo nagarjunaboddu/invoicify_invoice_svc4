@@ -18,15 +18,10 @@ public class CompanyService {
 
 
     public Company createCompany(Company company) {
-
-
         return companyRepository.save(company);
     }
 
-    public List<CompanyDetail> getAllCompanies() {
-        List<Company> companies = companyRepository.findAll();
-        return getDetailCompanies(companies);
-    }
+
 
     private List<CompanyDetail> getDetailCompanies(List<Company> companies) {
         List<CompanyDetail> myNewCompanies = new ArrayList<>();
@@ -36,10 +31,7 @@ public class CompanyService {
         return myNewCompanies;
     }
 
-    public List<CompanySV> getSimplifiedViewOfCompanies() {
-        List<Company> companies = companyRepository.findAll();
-        return getSimpleCompanies(companies);
-    }
+
 
     private List<CompanySV> getSimpleCompanies(List<Company> companies) {
         List<CompanySV> myNewCompanies = new ArrayList<>();
@@ -47,5 +39,14 @@ public class CompanyService {
             myNewCompanies.add(new CompanySV(company.getName(), company.getCity(), company.getState()));
         }
         return myNewCompanies;
+    }
+
+    public List<? extends CompanySV> getAllCompanies(boolean includeDetail) {
+        List<Company> companies = companyRepository.findAll();
+        if(includeDetail){
+            return getDetailCompanies(companies);
+        }else  {
+            return getSimpleCompanies(companies);
+        }
     }
 }

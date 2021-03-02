@@ -31,12 +31,10 @@ public class CompanyController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<? extends CompanySV> getAllCompanies(@RequestParam String viewType) {
-        if (viewType.equalsIgnoreCase("detail")) {
-            return service.getAllCompanies();
-        } else {
-            return service.getSimplifiedViewOfCompanies();
-        }
+    public List<? extends CompanySV> getAllCompanies(@RequestParam boolean includeDetail) {
+
+            return service.getAllCompanies(includeDetail);
+
 
     }
 
