@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -28,7 +27,7 @@ public class LineItem {
     private Integer quantity;
 
     public BigDecimal getTotalFees() {
-        return rateType.equals("flat")? rate: rate.multiply(new BigDecimal(quantity));
+        return rateType.equals("flat") ? rate : rate.multiply(new BigDecimal(quantity));
     }
 
 }

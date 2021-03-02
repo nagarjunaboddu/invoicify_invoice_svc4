@@ -47,7 +47,10 @@ public class InvoiceControllerITTest {
                 .andExpect(jsonPath("$.totalCost").value(0))
                 .andExpect(jsonPath("$.company.id").value(company.getId().toString()))
                 .andExpect(jsonPath("$.company.name").value(company.getName()))
-                .andExpect(jsonPath("$.company.address").value(company.getAddress()));
+                .andExpect(jsonPath("$.company.street").value(company.getStreet()))
+                .andExpect(jsonPath("$.company.city").value(company.getCity()))
+                .andExpect(jsonPath("$.company.state").value(company.getState()))
+                .andExpect(jsonPath("$.company.postalCode").value(company.getPostalCode()));
 
     }
 }

@@ -1,6 +1,7 @@
 package com.invocify.invoice.controller;
 
 import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.model.CompanySV;
 import com.invocify.invoice.service.CompanyService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -30,8 +31,13 @@ public class CompanyController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Company> getAllCompanies() {
-        return service.getAllCompanies();
+    public List<? extends CompanySV> getAllCompanies(@RequestParam String viewType) {
+        if (viewType.equalsIgnoreCase("detail")) {
+            return service.getAllCompanies();
+        } else {
+            return service.getSimplifiedViewOfCompanies();
+        }
+
     }
 
 }
