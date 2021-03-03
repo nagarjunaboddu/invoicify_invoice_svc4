@@ -5,10 +5,12 @@ import com.invocify.invoice.model.CompanyDetail;
 import com.invocify.invoice.model.CompanySV;
 import com.invocify.invoice.repository.CompanyRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,31 +24,22 @@ public class CompanyService {
     }
 
 
-
-    private List<CompanyDetail> getDetailCompanies(List<Company> companies) {
-        List<CompanyDetail> myNewCompanies = new ArrayList<>();
-        for (Company company : companies) {
-            myNewCompanies.add(new CompanyDetail(company.getName(), company.getCity(), company.getState(), company.getId(), company.getStreet(), company.getPostalCode()));
-        }
-        return myNewCompanies;
-    }
-
-
-
-    private List<CompanySV> getSimpleCompanies(List<Company> companies) {
-        List<CompanySV> myNewCompanies = new ArrayList<>();
-        for (Company company : companies) {
-            myNewCompanies.add(new CompanySV(company.getName(), company.getCity(), company.getState()));
-        }
-        return myNewCompanies;
-    }
-
     public List<? extends CompanySV> getAllCompanies(boolean includeDetail) {
         List<Company> companies = companyRepository.findAll();
+
         if(includeDetail){
-            return getDetailCompanies(companies);
+           return companies.stream().map(company -> {
+                CompanyDetail companyDetail = new CompanyDetail();
+                BeanUtils.copyProperties(company, companyDetail);
+                return companyDetail;
+            }).collect(Collectors.toList());
+
         }else  {
-            return getSimpleCompanies(companies);
+            return companies.stream().map(company -> {
+                CompanySV companySV = new CompanySV();
+                BeanUtils.copyProperties(company, companySV);
+                return companySV;
+            }).collect(Collectors.toList());
         }
     }
 }

@@ -2,6 +2,7 @@ package com.invocify.invoice.controller;
 
 
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class CompanyControllerAdvice {
     @ExceptionHandler(InvalidCompanyException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<String> handleInvalidCompanyException(InvalidCompanyException invalidCompanyException) {
-        return List.of(invalidCompanyException.getMessage());
+        return Arrays.asList(invalidCompanyException.getMessage());
     }
 
 }

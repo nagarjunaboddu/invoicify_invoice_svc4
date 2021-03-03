@@ -73,7 +73,7 @@ public class InvoiceControllerITTest {
 				.rateType("flat").build();
 		LineItem lineItem1 = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
 				.rateType("rate").build();
-		requestInvoice.setLineItems(new ArrayList<>() {
+		requestInvoice.setLineItems(new ArrayList<LineItem>() {
 			{
 				add(lineItem);
 				add(lineItem1);
@@ -86,11 +86,12 @@ public class InvoiceControllerITTest {
 				.andExpect(jsonPath("$.createdDate").exists()).andExpect(jsonPath("$.totalCost").value(56.5))
 				.andExpect(jsonPath("$.company.id").value(company.getId().toString()))
 				.andExpect(jsonPath("$.company.name").value(company.getName()))
-        .andExpect(jsonPath("$.company.street").value(company.getStreet()))
-        .andExpect(jsonPath("$.company.city").value(company.getCity()))
-        .andExpect(jsonPath("$.company.state").value(company.getState()))
-        .andExpect(jsonPath("$.company.postalCode").value(company.getPostalCode()));
-				.andExpect(jsonPath("$.lineItems.length()").value(2)).andExpect(jsonPath("$.lineItems[0].id").exists())
+				.andExpect(jsonPath("$.company.street").value(company.getStreet()))
+				.andExpect(jsonPath("$.company.city").value(company.getCity()))
+				.andExpect(jsonPath("$.company.state").value(company.getState()))
+				.andExpect(jsonPath("$.company.postalCode").value(company.getPostalCode()))
+				.andExpect(jsonPath("$.lineItems.length()").value(2))
+				.andExpect(jsonPath("$.lineItems[0].id").exists())
 				.andExpect(jsonPath("$.lineItems[0].description").value("Service line item"))
 				.andExpect(jsonPath("$.lineItems[0].quantity").value(1))
 				.andExpect(jsonPath("$.lineItems[0].rateType").value("flat"))
@@ -110,7 +111,7 @@ public class InvoiceControllerITTest {
 
 		LineItem lineItem = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
 				.rateType("rate").build();
-		InvoiceRequest requestInvoice = InvoiceRequest.builder().author("author").lineItems(new ArrayList<>() {
+		InvoiceRequest requestInvoice = InvoiceRequest.builder().author("author").lineItems(new ArrayList<LineItem>() {
 			{
 				add(lineItem);
 			}
@@ -127,7 +128,7 @@ public class InvoiceControllerITTest {
 		LineItem lineItem = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
 				.rateType("rate").build();
 		InvoiceRequest requestInvoice = InvoiceRequest.builder().author("author").company_id(id)
-				.lineItems(new ArrayList<>() {
+				.lineItems(new ArrayList<LineItem>() {
 					{
 						add(lineItem);
 					}
