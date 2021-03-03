@@ -42,7 +42,10 @@ public class CompanyServiceUnitTest {
 
        assertNotNull(actual.getId());
        assertEquals("Amazon", actual.getName());
-       assertEquals("233 Siliconvalley, CA", actual.getAddress());
-      verify(companyRepository, times(1)).save(any(Company.class));
+       assertEquals("233 Siliconvalley", actual.getStreet());
+       assertEquals("LA", actual.getCity());
+       assertEquals("California", actual.getState());
+       assertEquals("75035", actual.getPostalCode());
+       verify(companyRepository, times(1)).save(any(Company.class));
    }
 }
