@@ -86,7 +86,10 @@ public class InvoiceControllerITTest {
 				.andExpect(jsonPath("$.createdDate").exists()).andExpect(jsonPath("$.totalCost").value(56.5))
 				.andExpect(jsonPath("$.company.id").value(company.getId().toString()))
 				.andExpect(jsonPath("$.company.name").value(company.getName()))
-				.andExpect(jsonPath("$.company.address").value(company.getAddress()))
+        .andExpect(jsonPath("$.company.street").value(company.getStreet()))
+        .andExpect(jsonPath("$.company.city").value(company.getCity()))
+        .andExpect(jsonPath("$.company.state").value(company.getState()))
+        .andExpect(jsonPath("$.company.postalCode").value(company.getPostalCode()));
 				.andExpect(jsonPath("$.lineItems.length()").value(2)).andExpect(jsonPath("$.lineItems[0].id").exists())
 				.andExpect(jsonPath("$.lineItems[0].description").value("Service line item"))
 				.andExpect(jsonPath("$.lineItems[0].quantity").value(1))
@@ -133,7 +136,6 @@ public class InvoiceControllerITTest {
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.length()").value(1))
 				.andExpect(jsonPath("$.[0]").value(String.format("Given company not found: %s", id.toString())));
-
 	}
 
 }

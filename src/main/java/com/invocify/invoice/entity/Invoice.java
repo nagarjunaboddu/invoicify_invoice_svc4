@@ -1,6 +1,11 @@
 package com.invocify.invoice.entity;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import lombok.*;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
+
 import java.math.RoundingMode;
 import java.util.*;
 
@@ -14,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @Getter
@@ -63,4 +69,5 @@ public class Invoice {
 	public BigDecimal getTotalCost() {
 		return lineItems.stream().filter(Objects::nonNull).map(LineItem::getTotalFees).reduce(BigDecimal.ZERO,BigDecimal::add).setScale(2, RoundingMode.HALF_EVEN);
 	}
+
 }
