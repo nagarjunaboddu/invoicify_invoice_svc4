@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -24,10 +26,11 @@ public class LineItem {
     private String description;
     private BigDecimal rate;
     private String rateType;
-    private Integer quantity;
+    @Builder.Default
+    private Integer quantity=1;
 
     public BigDecimal getTotalFees() {
-        return rateType.equals("flat") ? rate : rate.multiply(new BigDecimal(quantity));
+       return rate.multiply(new BigDecimal(quantity)).setScale(2, RoundingMode.HALF_EVEN);
     }
 
 }

@@ -1,5 +1,8 @@
 package com.invocify.invoice.helper;
 
+
+import java.util.ArrayList;
+
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
 import com.invocify.invoice.model.InvoiceRequest;
@@ -8,6 +11,16 @@ import java.util.Date;
 import java.util.UUID;
 
 public class HelperClass {
+
+
+	public static Invoice expectedInvoice(Company expectedCompany) {
+		return Invoice.builder().author("tech guy")
+				.company(expectedCompany)
+				.createdDate(new Date())
+				.id(UUID.randomUUID())
+				.lineItems(new ArrayList<>())
+				.build();
+	}
 
     public static Company requestCompany() {
         return Company.builder().name("Amazon").street("233 Siliconvalley")
@@ -29,10 +42,6 @@ public class HelperClass {
                 .build();
     }
 
-    public static Invoice expectedInvoice(Company expectedCompany) {
-        return Invoice.builder().author("tech guy").company(expectedCompany).createdDate(new Date())
-                .id(UUID.randomUUID()).build();
-    }
 
 
 }
