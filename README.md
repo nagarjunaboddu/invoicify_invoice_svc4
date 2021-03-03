@@ -1,6 +1,10 @@
-# Capstone Team Project
+# Capstone Team Project - Inovicify Invoice Service
+
+#### Statuses
 ![Build and Deploy status](https://github.com/Tech-Student-Labs/invoicify_invoice_svc4/actions/workflows/heroku.yml/badge.svg)
 ![Test status](https://github.com/Tech-Student-Labs/invoicify_invoice_svc4/actions/workflows/gradle.yml/badge.svg)
+![Code Coverage](https://github.com/Tech-Student-Labs/invoicify_invoice_svc4/blob/master/.github/badges/jacoco.svg)
+![Branch Coverage](https://github.com/Tech-Student-Labs/invoicify_invoice_svc4/blob/master/.github/badges/branches.svg)
 
 * [Learn Dashboard](https://learn-2.galvanize.com/cohorts/2328)
 * [Project Board](https://github.com/orgs/Tech-Student-Labs/projects)
