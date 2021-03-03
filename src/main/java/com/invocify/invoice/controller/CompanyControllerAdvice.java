@@ -1,21 +1,18 @@
 package com.invocify.invoice.controller;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.invocify.invoice.exception.InvalidCompanyException;
 
 @RestControllerAdvice
 public class CompanyControllerAdvice {
@@ -27,6 +24,13 @@ public class CompanyControllerAdvice {
         ).collect(Collectors.toList());
         Collections.sort(result);
         return result;
+    }
+    
+    
+    @ExceptionHandler(InvalidCompanyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<String> handleInvalidCompanyException(InvalidCompanyException invalidCompanyException) {
+        return List.of(invalidCompanyException.getMessage());
     }
 
 }

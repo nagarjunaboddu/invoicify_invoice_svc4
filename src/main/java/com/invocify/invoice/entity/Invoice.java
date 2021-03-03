@@ -1,17 +1,10 @@
 package com.invocify.invoice.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.UUID;
+import java.math.RoundingMode;
+import java.util.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -39,6 +32,9 @@ public class Invoice {
 	private Company company;
 	private String author;
 
+	@OneToMany(cascade=CascadeType.ALL)
+	private List<LineItem> lineItems;
+
 	
 	@Temporal(TemporalType.DATE)
 	private Date createdDate;
@@ -46,9 +42,16 @@ public class Invoice {
 	public Invoice(String author, Company company) {
 		this.author = author;
 		this.company = company;
+		this.lineItems = new ArrayList<>();
 	}
-	
-	
+
+	public Invoice(String author, List<LineItem> lineItems, Company company) {
+		this.author = author;
+		this.company = company;
+		this.lineItems = lineItems;
+	}
+
+
 	/**
 	 * Initializes date before saving the entity
 	 */
@@ -58,6 +61,6 @@ public class Invoice {
 	}
 
 	public BigDecimal getTotalCost() {
-		return BigDecimal.ZERO;
+		return lineItems.stream().filter(Objects::nonNull).map(LineItem::getTotalFees).reduce(BigDecimal.ZERO,BigDecimal::add).setScale(2, RoundingMode.HALF_EVEN);
 	}
 }
