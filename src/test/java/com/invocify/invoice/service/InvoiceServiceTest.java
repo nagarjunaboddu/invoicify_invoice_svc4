@@ -2,6 +2,7 @@ package com.invocify.invoice.service;
 
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
+import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.helper.HelperClass;
 import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.repository.CompanyRepository;
@@ -33,7 +34,7 @@ public class InvoiceServiceTest {
     }
 
     @Test
-    public void createInvoice() {
+    public void createInvoice() throws InvalidCompanyException {
         Company expectedCompany = HelperClass.expectedCompany();
         Invoice expectedInvoice = HelperClass.expectedInvoice(expectedCompany);
 
@@ -55,6 +56,7 @@ public class InvoiceServiceTest {
         //verify mock usage
         verify(companyRepository, times(1)).findById(Mockito.any(UUID.class));
         verify(invoiceRepository, times(1)).save(Mockito.any(Invoice.class));
-    }
+    }   
+
 
 }

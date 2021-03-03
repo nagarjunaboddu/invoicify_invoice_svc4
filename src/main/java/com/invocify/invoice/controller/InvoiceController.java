@@ -1,6 +1,7 @@
 package com.invocify.invoice.controller;
 
 import com.invocify.invoice.entity.Invoice;
+import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.service.InvoiceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +23,7 @@ public class InvoiceController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Invoice createInvoice(@Valid @RequestBody InvoiceRequest invoiceRequest) {
+    public Invoice createInvoice(@Valid @RequestBody InvoiceRequest invoiceRequest) throws InvalidCompanyException {
         return invoiceService.createInvoice(invoiceRequest);
     }
 }
