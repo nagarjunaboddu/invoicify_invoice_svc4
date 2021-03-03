@@ -1,5 +1,6 @@
 package com.invocify.invoice.entity;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class Company {
 
     @Id
     @GeneratedValue
+    @Hidden
     private UUID id;
     @NotBlank(message = "Name cannot be empty")
     private String name;

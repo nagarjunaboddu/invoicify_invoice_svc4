@@ -31,11 +31,8 @@ public class CompanyController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<? extends CompanySV> getAllCompanies(@RequestParam boolean includeDetail) {
-
-            return service.getAllCompanies(includeDetail);
-
-
+    public List<? extends CompanySV> getAllCompanies(@RequestParam(required = false, defaultValue = "false") boolean includeDetail) {
+        return service.getAllCompanies(includeDetail);
     }
 
 }

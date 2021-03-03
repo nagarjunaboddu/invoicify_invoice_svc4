@@ -1,24 +1,16 @@
 package com.invocify.invoice.entity;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 import java.math.RoundingMode;
 import java.util.*;
-
-import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 
 @Entity
@@ -34,7 +26,6 @@ public class Invoice {
 	private UUID id;
 	
 	@ManyToOne
-	@Setter
 	private Company company;
 	private String author;
 
@@ -44,12 +35,6 @@ public class Invoice {
 	
 	@Temporal(TemporalType.DATE)
 	private Date createdDate;
-
-	public Invoice(String author, Company company) {
-		this.author = author;
-		this.company = company;
-		this.lineItems = new ArrayList<>();
-	}
 
 	public Invoice(String author, List<LineItem> lineItems, Company company) {
 		this.author = author;

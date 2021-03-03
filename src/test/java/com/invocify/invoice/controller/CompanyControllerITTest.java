@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -92,6 +94,46 @@ public class CompanyControllerITTest {
     }
 
     @Test
+    public void viewCompanyDefaultView() throws Exception {
+
+        Company company = Company.builder().name("Amazon")
+                .street("233 Siliconvalley")
+                .city("LA")
+                .state("California")
+                .postalCode("75035")
+                .build();
+        mockMvc.perform(post("/api/v1/invocify/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(company)))
+                .andExpect(status().isCreated());
+
+        Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+                .city("New York")
+                .state("New York")
+                .postalCode("75036").build();
+        mockMvc.perform(post("/api/v1/invocify/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(company1)))
+                .andExpect(status().isCreated());
+
+
+        mockMvc.perform(get("/api/v1/invocify/companies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Amazon"))
+                .andExpect(jsonPath("$[0].street").doesNotExist())
+                .andExpect(jsonPath("$[0].city").value("LA"))
+                .andExpect(jsonPath("$[0].state").value("California"))
+                .andExpect(jsonPath("$[0].postalCode").doesNotExist())
+                .andExpect(jsonPath("$[1].name").value("Apple"))
+                .andExpect(jsonPath("$[1].street").doesNotExist())
+                .andExpect(jsonPath("$[1].city").value("New York"))
+                .andExpect(jsonPath("$[1].state").value("New York"))
+                .andExpect(jsonPath("$[1].postalCode").doesNotExist());
+
+    }
+
+    @Test
     public void viewCompanyDefaultSimplifiedView() throws Exception {
 
         Company company = Company.builder().name("Amazon")
@@ -108,7 +150,7 @@ public class CompanyControllerITTest {
         Company company1 = Company.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
                 .state("New York")
-                .postalCode("75035").build();
+                .postalCode("75036").build();
         mockMvc.perform(post("/api/v1/invocify/companies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company1)))
@@ -119,23 +161,25 @@ public class CompanyControllerITTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("Amazon"))
+                .andExpect(jsonPath("$[0].street").doesNotExist())
                 .andExpect(jsonPath("$[0].city").value("LA"))
                 .andExpect(jsonPath("$[0].state").value("California"))
+                .andExpect(jsonPath("$[0].postalCode").doesNotExist())
                 .andExpect(jsonPath("$[1].name").value("Apple"))
+                .andExpect(jsonPath("$[1].street").doesNotExist())
                 .andExpect(jsonPath("$[1].city").value("New York"))
-                .andExpect(jsonPath("$[1].state").value("New York"));
+                .andExpect(jsonPath("$[1].state").value("New York"))
+                .andExpect(jsonPath("$[1].postalCode").doesNotExist());
 
     }
 
     @Test
     public void viewCompanyDetailedView() throws Exception {
 
-        Company company = Company.builder().name("Amazon")
-                .street("233 Siliconvalley")
+        Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
-                .postalCode("75035")
-                .build();
+                .postalCode("75035").build();
         mockMvc.perform(post("/api/v1/invocify/companies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company)))
@@ -144,7 +188,7 @@ public class CompanyControllerITTest {
         Company company1 = Company.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
                 .state("New York")
-                .postalCode("75035").build();
+                .postalCode("75036").build();
         mockMvc.perform(post("/api/v1/invocify/companies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company1)))
@@ -163,8 +207,7 @@ public class CompanyControllerITTest {
                 .andExpect(jsonPath("$[1].street").value("430 CreditValley"))
                 .andExpect(jsonPath("$[1].city").value("New York"))
                 .andExpect(jsonPath("$[1].state").value("New York"))
-                .andExpect(jsonPath("$[1].postalCode").value("75035"));
-
+                .andExpect(jsonPath("$[1].postalCode").value("75036"));
 
     }
 
