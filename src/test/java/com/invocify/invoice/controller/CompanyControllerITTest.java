@@ -227,7 +227,10 @@ public class CompanyControllerITTest {
         mockMvc
                 .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false));
+                .andExpect(jsonPath("$.active").value(false))
+                .andExpect(jsonPath("$.name").value("Amazon"))
+                .andExpect(jsonPath("$.city").value("LA"))
+                .andExpect(jsonPath("$.state").value("California"));
 
 
     }
