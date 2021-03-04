@@ -2,6 +2,7 @@ package com.invocify.invoice.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
@@ -87,8 +87,10 @@ class InvoiceControllerITTest {
 
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.author").value(requestInvoice.getAuthor()))
-				.andExpect(jsonPath("$.createdDate").exists()).andExpect(jsonPath("$.totalCost").value(56.5))
+				.andExpect(jsonPath("$.id").exists())
+				.andExpect(jsonPath("$.author").value(requestInvoice.getAuthor()))
+				.andExpect(jsonPath("$.createdDate").exists())
+				.andExpect(jsonPath("$.totalCost").value(56.5))
 				.andExpect(jsonPath("$.company.id").value(company.getId().toString()))
 				.andExpect(jsonPath("$.company.name").value(company.getName()))
 				.andExpect(jsonPath("$.company.street").value(company.getStreet()))
@@ -146,20 +148,60 @@ class InvoiceControllerITTest {
 	
 	@Test
 	public void getListOfInvoices() throws Exception{
-		createInvoice();
+		createInvoice(1);
 		mockMvc.perform(get("/api/v1/invocify/invoices"))
 		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.length()").value(1))
-		.andExpect(jsonPath("$[0].paidStatus").value(false));
+		.andExpect(jsonPath("$.invoices.length()").value(1))
+		.andExpect(jsonPath("$.invoices[0].paidStatus").value(false))
+		.andExpect(jsonPath("$.invoices[0].createdDate").exists())
+		.andExpect(jsonPath("$.invoices[0].totalCost").value(56.5));
 	}
 	
-	private void createInvoice() throws Exception {
+	@Test
+	public void getListOfInvoicesWithDefaultPaginationAndSort() throws Exception{
+		//data setup
+		for (int i =0;i<15;i++) {
+			createInvoice(i);
+		}
+		
+		mockMvc.perform(get("/api/v1/invocify/invoices"))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.invoices.length()").value(10))
+		.andExpect(jsonPath("$.totalPages").value(2))
+		.andExpect(jsonPath("$.totalElements").value(15))
+		//validate that first element is last added element and last element is oldest added element
+		.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 14"))
+		.andExpect(jsonPath("$.invoices[9].lineItems[0].description").value("Service line item 5"));
+	}
+	
+	@Test
+	public void getListOfInvoicesWithCustomPagination() throws Exception{
+		//data setup
+		for (int i =0;i<15;i++) {
+			createInvoice(i);
+		}
+		
+		mockMvc.perform(get("/api/v1/invocify/invoices").param("page", "1"))
+		.andExpect(status().isOk())
+		//for second page expect only 5 values
+		.andExpect(jsonPath("$.invoices.length()").value(5))
+		.andExpect(jsonPath("$.totalPages").value(2))
+		.andExpect(jsonPath("$.totalElements").value(15))
+		//validate that first element is last added element and last element is oldest added element
+		.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 4"))
+		.andExpect(jsonPath("$.invoices[4].lineItems[0].description").value("Service line item 0"));
+	}
+	
+	/**
+	 * Helper method to create invoices
+	 */
+	private void createInvoice(int count) throws Exception {
 		Company company = companyRepository.save(HelperClass.requestCompany());
 		Invoice invoice = HelperClass.expectedInvoice(company);
 		InvoiceRequest requestInvoice = HelperClass.requestInvoice(invoice);
-		LineItem lineItem = LineItem.builder().description("Service line item").quantity(1).rate(new BigDecimal(15.3))
+		LineItem lineItem = LineItem.builder().description("Service line item "+count).quantity(1).rate(new BigDecimal(15.3))
 				.rateType("flat").build();
-		LineItem lineItem1 = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
+		LineItem lineItem1 = LineItem.builder().description("line item "+count).quantity(4).rate(new BigDecimal(10.3))
 				.rateType("rate").build();
 		requestInvoice.setLineItems(new ArrayList<LineItem>() {
 			{

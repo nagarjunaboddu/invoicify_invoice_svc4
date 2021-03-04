@@ -33,7 +33,7 @@ public class Invoice {
 	private List<LineItem> lineItems;
 
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 
 	public Invoice(String author, List<LineItem> lineItems, Company company) {
