@@ -231,5 +231,54 @@ public class CompanyControllerITTest {
 
 
     }
+    @Test
+    public void deleteCompany_andVerify_notInViewAll() throws Exception {
+        Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
+                .city("LA")
+                .state("California")
+                .postalCode("75035").build();
+
+        Company companyEntity = companyRepository.save(company);
+
+        mockMvc
+                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.active").value(false))
+
+        ;
+
+        mockMvc
+                .perform(get("/api/v1/invocify/companies").param("includeInactive", "false"))
+                .andExpect(jsonPath("$.length()").value(0));
+
+    }
+
+    @Test
+    public void deleteCompany_andVerify_oneOnlyInViewCompany_testingIncludeInactive() throws Exception {
+        Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
+                .city("LA")
+                .state("California")
+                .postalCode("75035").build();
+        Company company2 = Company.builder().name("Ebay").street("233 JoshLane")
+                .city("New York")
+                .state("New York")
+                .postalCode("10001").build();
+        Company companyEntity = companyRepository.save(company);
+        Company companyEntity2 = companyRepository.save(company2);
+        mockMvc
+                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.active").value(false))
+
+        ;
+
+        mockMvc
+                .perform(get("/api/v1/invocify/companies").param("includeInactive", "false"))
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("Ebay"))
+                .andExpect(jsonPath("$[0].city").value("New York"))
+                .andExpect(jsonPath("$[0].state").value("New York"));
+
+    }
 
 }

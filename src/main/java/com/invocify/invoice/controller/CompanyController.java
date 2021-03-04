@@ -32,8 +32,9 @@ public class CompanyController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<? extends CompanySV> getAllCompanies(@RequestParam(required = false, defaultValue = "false") boolean includeDetail) {
-        return service.getAllCompanies(includeDetail);
+    public List<? extends CompanySV> getAllCompanies(@RequestParam(required = false, defaultValue = "false") boolean includeDetail,
+                                                     @RequestParam(required = false, defaultValue = "false") boolean includeInactive) {
+        return service.getAllCompanies(includeDetail, includeInactive);
     }
 
     @PatchMapping("/{companyId}")

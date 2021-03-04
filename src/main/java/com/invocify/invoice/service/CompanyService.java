@@ -25,9 +25,16 @@ public class CompanyService {
     }
 
 
-    public List<? extends CompanySV> getAllCompanies(boolean includeDetail) {
+    public List<? extends CompanySV> getAllCompanies(boolean includeDetail, boolean includeInactive) {
         List<Company> companies = companyRepository.findAll();
 
+        if(!includeInactive) {
+            companies = companyRepository
+                    .findAll()
+                    .stream()
+                    .filter(company -> company.getActive() == !includeInactive)
+                    .collect(Collectors.toList());
+        }
         if(includeDetail){
            return companies.stream().map(company -> {
                 CompanyDetail companyDetail = new CompanyDetail();
