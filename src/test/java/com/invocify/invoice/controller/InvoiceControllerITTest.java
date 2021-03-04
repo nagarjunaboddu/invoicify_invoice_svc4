@@ -1,12 +1,14 @@
 package com.invocify.invoice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.invocify.invoice.entity.Company;
-import com.invocify.invoice.entity.Invoice;
-import com.invocify.invoice.entity.LineItem;
-import com.invocify.invoice.helper.HelperClass;
-import com.invocify.invoice.model.InvoiceRequest;
-import com.invocify.invoice.repository.CompanyRepository;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,14 +17,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.UUID;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.entity.Invoice;
+import com.invocify.invoice.entity.LineItem;
+import com.invocify.invoice.helper.HelperClass;
+import com.invocify.invoice.model.InvoiceRequest;
+import com.invocify.invoice.repository.CompanyRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -144,8 +146,28 @@ class InvoiceControllerITTest {
 	
 	@Test
 	public void getListOfInvoices() throws Exception{
+		createInvoice();
 		mockMvc.perform(get("/api/v1/invocify/invoices"))
-		.andExpect(status().isOk());
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.length()").value(1));
+	}
+	
+	private void createInvoice() throws Exception {
+		Company company = companyRepository.save(HelperClass.requestCompany());
+		Invoice invoice = HelperClass.expectedInvoice(company);
+		InvoiceRequest requestInvoice = HelperClass.requestInvoice(invoice);
+		LineItem lineItem = LineItem.builder().description("Service line item").quantity(1).rate(new BigDecimal(15.3))
+				.rateType("flat").build();
+		LineItem lineItem1 = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
+				.rateType("rate").build();
+		requestInvoice.setLineItems(new ArrayList<LineItem>() {
+			{
+				add(lineItem);
+				add(lineItem1);
+			}
+		});
+		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(requestInvoice)));
 	}
 
 }

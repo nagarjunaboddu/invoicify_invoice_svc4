@@ -7,6 +7,9 @@ import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.repository.CompanyRepository;
 import com.invocify.invoice.repository.InvoiceRepository;
 import lombok.AllArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +32,10 @@ public class InvoiceService {
 
 	private Invoice buildInvoiceEntity(InvoiceRequest invoiceRequest, Company company) {
 		return new Invoice(invoiceRequest.getAuthor(), invoiceRequest.getLineItems(), company);
+	}
+
+	public List<Invoice> getInvoices() {
+		return invoiceRepository.findAll();
 	}
 
 }
