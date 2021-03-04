@@ -41,6 +41,8 @@ public class Invoice {
 		this.company = company;
 		this.lineItems = lineItems;
 	}
+	
+	private boolean paidStatus;
 
 
 	/**

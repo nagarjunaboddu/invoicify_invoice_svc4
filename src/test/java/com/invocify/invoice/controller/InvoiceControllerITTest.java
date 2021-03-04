@@ -149,7 +149,8 @@ class InvoiceControllerITTest {
 		createInvoice();
 		mockMvc.perform(get("/api/v1/invocify/invoices"))
 		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.length()").value(1));
+		.andExpect(jsonPath("$.length()").value(1))
+		.andExpect(jsonPath("$[0].paidStatus").value(false));
 	}
 	
 	private void createInvoice() throws Exception {
