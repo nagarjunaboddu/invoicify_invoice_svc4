@@ -38,8 +38,8 @@ public class CompanyController {
     }
 
     @PatchMapping("/{companyId}")
-    public Company deleteCompany(@PathVariable UUID companyId){
-        return service.deleteCompany(companyId);
+    public Company archiveCompany(@PathVariable UUID companyId){
+        return service.archiveCompany(companyId);
     }
 
 }

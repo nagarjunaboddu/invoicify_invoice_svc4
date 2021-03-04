@@ -49,7 +49,7 @@ public class CompanyService {
         }
     }
 
-    public Company deleteCompany(UUID companyId) {
+    public Company archiveCompany(UUID companyId) {
         Company company = companyRepository.findById(companyId).get();
         company.setActive(false);
         return companyRepository.save(company);
