@@ -232,7 +232,7 @@ public class CompanyControllerITTest {
 
     }
     @Test
-    public void deleteCompany_andVerify_notInViewAll() throws Exception {
+    public void viewActiveCompaniesSimpleView() throws Exception {
         Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
@@ -240,44 +240,136 @@ public class CompanyControllerITTest {
 
         Company companyEntity = companyRepository.save(company);
 
+
+        Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+                .city("New York")
+                .state("New York")
+                .postalCode("75036").build();
+        Company companyEntity1 = companyRepository.save(company1);
+
         mockMvc
-                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity.getId()))
+                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false))
+                .andExpect(jsonPath("$.active").value(false));
 
-        ;
 
         mockMvc
-                .perform(get("/api/v1/invocify/companies").param("includeInactive", "false"))
-                .andExpect(jsonPath("$.length()").value(0));
+                .perform(get("/api/v1/invocify/companies").param("includeDetail","false").param("includeInactive", "false"))
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("Amazon"))
+                .andExpect(jsonPath("$[0].street").doesNotExist())
+                .andExpect(jsonPath("$[0].city").value("LA"))
+                .andExpect(jsonPath("$[0].state").value("California"))
+                .andExpect(jsonPath("$[0].postalCode").doesNotExist());
 
     }
 
     @Test
-    public void deleteCompany_andVerify_oneOnlyInViewCompany_testingIncludeInactive() throws Exception {
+    public void viewActiveCompaniesDetailView() throws Exception {
         Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
                 .postalCode("75035").build();
-        Company company2 = Company.builder().name("Ebay").street("233 JoshLane")
+
+        Company companyEntity = companyRepository.save(company);
+
+
+        Company company1 = Company.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
                 .state("New York")
-                .postalCode("10001").build();
-        Company companyEntity = companyRepository.save(company);
-        Company companyEntity2 = companyRepository.save(company2);
+                .postalCode("75036").build();
+        Company companyEntity1 = companyRepository.save(company1);
+
         mockMvc
-                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity.getId()))
+                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false))
+                .andExpect(jsonPath("$.active").value(false));
 
-        ;
 
         mockMvc
-                .perform(get("/api/v1/invocify/companies").param("includeInactive", "false"))
+                .perform(get("/api/v1/invocify/companies").param("includeDetail","true").param("includeInactive", "false"))
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].name").value("Ebay"))
-                .andExpect(jsonPath("$[0].city").value("New York"))
-                .andExpect(jsonPath("$[0].state").value("New York"));
+                .andExpect(jsonPath("$[0].name").value("Amazon"))
+                .andExpect(jsonPath("$[0].street").value("233 Siliconvalley"))
+                .andExpect(jsonPath("$[0].city").value("LA"))
+                .andExpect(jsonPath("$[0].state").value("California"))
+                .andExpect(jsonPath("$[0].postalCode").value("75035"));
+
+    }
+
+    @Test
+    public void viewAllCompaniesDetailView() throws Exception {
+        Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
+                .city("LA")
+                .state("California")
+                .postalCode("75035").build();
+
+        Company companyEntity = companyRepository.save(company);
+
+
+        Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+                .city("New York")
+                .state("New York")
+                .postalCode("75036").build();
+        Company companyEntity1 = companyRepository.save(company1);
+
+        mockMvc
+                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity1.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.active").value(false));
+
+
+        mockMvc
+                .perform(get("/api/v1/invocify/companies").param("includeDetail","true").param("includeInactive", "true"))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Amazon"))
+                .andExpect(jsonPath("$[0].street").value("233 Siliconvalley"))
+                .andExpect(jsonPath("$[0].city").value("LA"))
+                .andExpect(jsonPath("$[0].state").value("California"))
+                .andExpect(jsonPath("$[0].postalCode").value("75035"))
+                .andExpect(jsonPath("$[1].name").value("Apple"))
+                .andExpect(jsonPath("$[1].street").value("430 CreditValley"))
+                .andExpect(jsonPath("$[1].city").value("New York"))
+                .andExpect(jsonPath("$[1].state").value("New York"))
+                .andExpect(jsonPath("$[1].postalCode").value("75036"));
+
+    }
+
+    @Test
+    public void viewAllCompaniesSimpleView() throws Exception {
+        Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
+                .city("LA")
+                .state("California")
+                .postalCode("75035").build();
+
+        Company companyEntity = companyRepository.save(company);
+
+
+        Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+                .city("New York")
+                .state("New York")
+                .postalCode("75036").build();
+        Company companyEntity1 = companyRepository.save(company1);
+
+        mockMvc
+                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity1.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.active").value(false));
+
+
+        mockMvc
+                .perform(get("/api/v1/invocify/companies").param("includeDetail","false").param("includeInactive", "true"))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].name").value("Amazon"))
+                .andExpect(jsonPath("$[0].street").doesNotExist())
+                .andExpect(jsonPath("$[0].city").value("LA"))
+                .andExpect(jsonPath("$[0].state").value("California"))
+                .andExpect(jsonPath("$[0].postalCode").doesNotExist())
+                .andExpect(jsonPath("$[1].name").value("Apple"))
+                .andExpect(jsonPath("$[1].street").doesNotExist())
+                .andExpect(jsonPath("$[1].city").value("New York"))
+                .andExpect(jsonPath("$[1].state").value("New York"))
+                .andExpect(jsonPath("$[1].postalCode").doesNotExist());
 
     }
 
