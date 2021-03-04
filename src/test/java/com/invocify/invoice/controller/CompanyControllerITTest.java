@@ -216,7 +216,7 @@ public class CompanyControllerITTest {
 
     }
     @Test
-    public void deleteCompany() throws Exception {
+    public void archiveCompany() throws Exception {
         Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
