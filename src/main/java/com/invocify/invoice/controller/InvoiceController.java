@@ -26,4 +26,9 @@ public class InvoiceController {
     public Invoice createInvoice(@Valid @RequestBody InvoiceRequest invoiceRequest) throws InvalidCompanyException {
         return invoiceService.createInvoice(invoiceRequest);
     }
+    
+    @GetMapping
+    public void getInvoices() {
+    	
+    }
 }

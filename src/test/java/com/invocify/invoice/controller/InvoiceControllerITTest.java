@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -139,6 +140,12 @@ class InvoiceControllerITTest {
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.length()").value(1))
 				.andExpect(jsonPath("$.[0]").value(String.format("Given company not found: %s", id.toString())));
+	}
+	
+	@Test
+	public void getListOfInvoices() throws Exception{
+		mockMvc.perform(get("/api/v1/invocify/invoices"))
+		.andExpect(status().isOk());
 	}
 
 }
