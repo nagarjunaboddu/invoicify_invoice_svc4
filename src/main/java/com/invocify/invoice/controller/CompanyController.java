@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -33,6 +34,11 @@ public class CompanyController {
     @ResponseStatus(HttpStatus.OK)
     public List<? extends CompanySV> getAllCompanies(@RequestParam(required = false, defaultValue = "false") boolean includeDetail) {
         return service.getAllCompanies(includeDetail);
+    }
+
+    @PatchMapping("/{companyId}")
+    public Company deleteCompany(@PathVariable UUID companyId){
+        return service.deleteCompany(companyId);
     }
 
 }

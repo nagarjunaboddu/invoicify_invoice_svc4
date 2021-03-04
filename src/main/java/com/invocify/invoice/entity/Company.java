@@ -35,4 +35,8 @@ public class Company {
     private String state;
     @NotBlank(message = "PostalCode cannot be empty")
     private String postalCode;
+    @Builder.Default
+    private Boolean active = true;
+
+
 }

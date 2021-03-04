@@ -1,7 +1,9 @@
 package com.invocify.invoice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.repository.CompanyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,8 +13,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,6 +28,9 @@ public class CompanyControllerITTest {
 
     @Autowired
     ObjectMapper mapper;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @Test
     public void createCompanyTest_success() throws Exception {
@@ -210,6 +215,21 @@ public class CompanyControllerITTest {
                 .andExpect(jsonPath("$[1].postalCode").value("75036"));
 
     }
+    @Test
+    public void deleteCompany() throws Exception {
+        Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
+                .city("LA")
+                .state("California")
+                .postalCode("75035").build();
 
+        Company companyEntity = companyRepository.save(company);
+
+        mockMvc
+                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.active").value(false));
+
+
+    }
 
 }

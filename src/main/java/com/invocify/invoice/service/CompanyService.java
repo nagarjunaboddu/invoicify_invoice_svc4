@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,5 +42,11 @@ public class CompanyService {
                 return companySV;
             }).collect(Collectors.toList());
         }
+    }
+
+    public Company deleteCompany(UUID companyId) {
+        Company company = companyRepository.findById(companyId).get();
+        company.setActive(false);
+        return companyRepository.save(company);
     }
 }
