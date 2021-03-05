@@ -1,4 +1,4 @@
-# Capstone Team Project - Inovicify Invoice Service
+# Capstone Team Project - Invocify Invoice Service
 
 #### Statuses
 ![Build and Deploy status](https://github.com/Tech-Student-Labs/invoicify_invoice_svc4/actions/workflows/heroku.yml/badge.svg)

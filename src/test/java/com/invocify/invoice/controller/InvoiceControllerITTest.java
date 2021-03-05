@@ -200,7 +200,7 @@ class InvoiceControllerITTest {
 			createInvoice(i);
 			Thread.sleep(1000);
 		}		
-		
+		//Pass custom filter time to validate proper filtering based on filter unit
 		mockMvc.perform(get("/api/v1/invocify/invoices").param("filterDuration", "2").param("filterUnit", "SECONDS"))
 		.andExpect(status().isOk())
 		//expect only 2 values
@@ -208,6 +208,25 @@ class InvoiceControllerITTest {
 		.andExpect(jsonPath("$.invoices.length()").value(not(0)))
 		//validate that first element is last added element and last element is oldest added element
 		.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 2"));
+	}
+	
+	@Test
+	public void getListOfInvoicesFilterWithDurationAndPagination() throws Exception{
+		//data setup
+		for (int i =0;i<15;i++) {
+			createInvoice(i);
+			//Sleep for 1s to create delay in creation of invoice
+			Thread.sleep(1000);
+		}		
+		//Pass custom filter time to validate proper filtering based on filter unit
+		mockMvc.perform(get("/api/v1/invocify/invoices").param("filterDuration", "12").param("filterUnit", "SECONDS"))
+		.andExpect(status().isOk())
+		//expect only 10 values
+		.andExpect(jsonPath("$.invoices.length()").value(not(15)))
+		.andExpect(jsonPath("$.invoices.length()").value(not(0)))
+		.andExpect(jsonPath("$.invoices.length()").value(10))
+		//validate that first element is last added element
+		.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 14"));
 	}
 	
 	/**

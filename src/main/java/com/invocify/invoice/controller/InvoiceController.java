@@ -23,13 +23,15 @@ import com.invocify.invoice.model.InvoiceListResponse;
 import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.service.InvoiceService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/invocify/invoices")
 @AllArgsConstructor
-@Tag(name = "Invoice")
+@Tag(name = "Invoice", description = "resources to manage invoices")
 @Validated
 public class InvoiceController {
 
@@ -45,11 +47,12 @@ public class InvoiceController {
 		return invoiceService.createInvoice(invoiceRequest);
 	}
 
+	@Operation(description = "get list of invoices created in last year, sorted by date and ten invoices per page")
 	@GetMapping
 	public InvoiceListResponse getInvoices(
 			@PositiveOrZero @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-			@Positive @RequestParam(required = false, defaultValue = DEFAULT_FILTERDURATION) Long filterDuration,
-			@RequestParam(required = false, defaultValue = DEFAULT_FILTERUNIT) String filterUnit) {
+			@Parameter(hidden = true) @Positive @RequestParam(required = false, defaultValue = DEFAULT_FILTERDURATION) Long filterDuration,
+			@Parameter(hidden = true, example = "YEARS,MONTHS,DAYS,MINUTES") @RequestParam(required = false, defaultValue = DEFAULT_FILTERUNIT) String filterUnit) {
 		return invoiceResponse(invoiceService.getInvoices(page, filterDuration, ChronoUnit.valueOf(filterUnit)));
 	}
 
