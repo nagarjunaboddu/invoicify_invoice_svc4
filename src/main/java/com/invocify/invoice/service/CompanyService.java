@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,22 +24,34 @@ public class CompanyService {
     }
 
 
-    public List<? extends CompanySV> getAllCompanies(boolean includeDetail) {
-        List<Company> companies = companyRepository.findAll();
+    public List<? extends CompanySV> getAllCompanies(boolean includeDetail, boolean includeInactive) {
+        List<Company> companies;
+        if (includeInactive) {
+            companies = companyRepository.findAll();
+        } else {
+            companies = companyRepository.findByActiveTrue();
+        }
 
-        if(includeDetail){
-           return companies.stream().map(company -> {
+
+        if (includeDetail) {
+            return companies.stream().map(company -> {
                 CompanyDetail companyDetail = new CompanyDetail();
                 BeanUtils.copyProperties(company, companyDetail);
                 return companyDetail;
             }).collect(Collectors.toList());
 
-        }else  {
+        } else {
             return companies.stream().map(company -> {
                 CompanySV companySV = new CompanySV();
                 BeanUtils.copyProperties(company, companySV);
                 return companySV;
             }).collect(Collectors.toList());
         }
+    }
+
+    public Company archiveCompany(UUID companyId) {
+        Company company = companyRepository.findById(companyId).get();
+        company.setActive(false);
+        return companyRepository.save(company);
     }
 }
