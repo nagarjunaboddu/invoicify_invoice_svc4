@@ -1,6 +1,9 @@
 package com.invocify.invoice.controller;
 
+import java.time.temporal.ChronoUnit;
+
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 import org.springframework.data.domain.Page;
@@ -32,6 +35,10 @@ public class InvoiceController {
 
 	private InvoiceService invoiceService;
 
+	private static final String DEFAULT_FILTERUNIT = "YEARS";
+	private static final String DEFAULT_FILTERDURATION = "1";
+	private static final String DEFAULT_PAGE = "0";
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Invoice createInvoice(@Valid @RequestBody InvoiceRequest invoiceRequest) throws InvalidCompanyException {
@@ -40,8 +47,10 @@ public class InvoiceController {
 
 	@GetMapping
 	public InvoiceListResponse getInvoices(
-			@PositiveOrZero @RequestParam(required = false, defaultValue = "0") Integer page) {
-		return invoiceResponse(invoiceService.getInvoices(page));
+			@PositiveOrZero @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+			@Positive @RequestParam(required = false, defaultValue = DEFAULT_FILTERDURATION) Long filterDuration,
+			@RequestParam(required = false, defaultValue = DEFAULT_FILTERUNIT) String filterUnit) {
+		return invoiceResponse(invoiceService.getInvoices(page, filterDuration, ChronoUnit.valueOf(filterUnit)));
 	}
 
 	private InvoiceListResponse invoiceResponse(Page<Invoice> pages) {

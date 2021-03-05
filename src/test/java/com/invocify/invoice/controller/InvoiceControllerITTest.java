@@ -1,8 +1,8 @@
 package com.invocify.invoice.controller;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -190,6 +190,24 @@ class InvoiceControllerITTest {
 		//validate that first element is last added element and last element is oldest added element
 		.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 4"))
 		.andExpect(jsonPath("$.invoices[4].lineItems[0].description").value("Service line item 0"));
+	}
+	
+	
+	@Test
+	public void getListOfInvoicesFilterWithDuration() throws Exception{
+		//data setup
+		for (int i =0;i<3;i++) {
+			createInvoice(i);
+			Thread.sleep(1000);
+		}		
+		
+		mockMvc.perform(get("/api/v1/invocify/invoices").param("filterDuration", "2").param("filterUnit", "SECONDS"))
+		.andExpect(status().isOk())
+		//expect only 2 values
+		.andExpect(jsonPath("$.invoices.length()").value(not(3)))
+		.andExpect(jsonPath("$.invoices.length()").value(not(0)))
+		//validate that first element is last added element and last element is oldest added element
+		.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 2"));
 	}
 	
 	/**
