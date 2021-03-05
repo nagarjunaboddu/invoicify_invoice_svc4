@@ -37,7 +37,7 @@ public class CompanyController {
         return service.getAllCompanies(includeDetail, includeInactive);
     }
 
-    @PatchMapping("/{companyId}")
+    @PatchMapping("/{companyId}/status")
     public Company archiveCompany(@PathVariable UUID companyId){
         return service.archiveCompany(companyId);
     }

@@ -225,7 +225,7 @@ public class CompanyControllerITTest {
         Company companyEntity = companyRepository.save(company);
 
         mockMvc
-                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity.getId()))
+                .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.active").value(false))
                 .andExpect(jsonPath("$.name").value("Amazon"))
@@ -251,7 +251,7 @@ public class CompanyControllerITTest {
         Company companyEntity1 = companyRepository.save(company1);
 
         mockMvc
-                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity1.getId()))
+                .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.active").value(false));
 
@@ -284,7 +284,7 @@ public class CompanyControllerITTest {
         Company companyEntity1 = companyRepository.save(company1);
 
         mockMvc
-                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity1.getId()))
+                .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.active").value(false));
 
@@ -317,7 +317,7 @@ public class CompanyControllerITTest {
         Company companyEntity1 = companyRepository.save(company1);
 
         mockMvc
-                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity1.getId()))
+                .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.active").value(false));
 
@@ -355,7 +355,7 @@ public class CompanyControllerITTest {
         Company companyEntity1 = companyRepository.save(company1);
 
         mockMvc
-                .perform(patch("/api/v1/invocify/companies/{companyId}", companyEntity1.getId()))
+                .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.active").value(false));
 
