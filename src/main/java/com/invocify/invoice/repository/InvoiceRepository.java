@@ -14,6 +14,6 @@ import com.invocify.invoice.entity.Invoice;
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
 	
-	Page<Invoice> findByCreatedDateAfter(Pageable pageAble, @Param(value = "createdDate") Date createdDate);
+	Page<Invoice> findByCreatedDateAfter(Pageable pageAble, @Param(value = "createdDate") Date filterDate);
 
 }
