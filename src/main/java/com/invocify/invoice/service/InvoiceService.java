@@ -1,5 +1,17 @@
 package com.invocify.invoice.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
+import com.invocify.invoice.exception.InvoiceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
 import com.invocify.invoice.entity.LineItem;
@@ -7,8 +19,8 @@ import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.repository.CompanyRepository;
 import com.invocify.invoice.repository.InvoiceRepository;
+
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +36,8 @@ public class InvoiceService {
 	InvoiceRepository invoiceRepository;
 	CompanyRepository companyRepository;
 
+	private static final int NUMBER_OF_ELEMENTS = 10;
+
 	public Invoice createInvoice(InvoiceRequest invoiceRequest) throws InvalidCompanyException {
 		Company company = companyRepository.findById(invoiceRequest.getCompany_id())
 				.orElseThrow(() -> new InvalidCompanyException(invoiceRequest.getCompany_id()));
@@ -35,9 +49,21 @@ public class InvoiceService {
 		return new Invoice(invoiceRequest.getAuthor(), invoiceRequest.getLineItems(), company);
 	}
 
-    public Invoice addLineItemsToExistingInvoice(UUID invoiceId, List<LineItem> lineItems) {
-		Invoice invoice = invoiceRepository.findById(invoiceId).get();
+	public Invoice addLineItemsToInvoice(UUID invoiceId, List<LineItem> lineItems) throws InvoiceNotFoundException {
+		Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new InvoiceNotFoundException(invoiceId));
 		invoice.getLineItems().addAll(lineItems);
 		return invoiceRepository.save(invoice);
-    }
+	}
+
+	public Page<Invoice> getInvoices(int page, long chronoValue, ChronoUnit chronoUnit) {
+		Pageable sortByDateWithTenEntries = PageRequest.of(page, NUMBER_OF_ELEMENTS,
+				Sort.by("createdDate").descending());
+		return invoiceRepository.findByCreatedDateAfter(sortByDateWithTenEntries, filterDate(chronoValue, chronoUnit));
+	}
+
+	private Date filterDate(long chronoValue, ChronoUnit chronoUnit) {
+		LocalDateTime filterDate = LocalDateTime.now().minus(chronoValue, chronoUnit);
+		return Date.from(filterDate.atZone(ZoneId.systemDefault()).toInstant());
+	}
+
 }
