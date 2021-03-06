@@ -33,5 +33,6 @@ public class CompanyControllerAdvice {
     public List<String> handleInvalidCompanyException(InvalidCompanyException invalidCompanyException) {
         return Arrays.asList(invalidCompanyException.getMessage());
     }
+    
 
 }
