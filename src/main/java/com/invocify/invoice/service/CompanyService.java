@@ -54,4 +54,9 @@ public class CompanyService {
         company.setActive(false);
         return companyRepository.save(company);
     }
+    
+    public Company modifyCompany(UUID companyId, Company companyRequest) {    	
+    	companyRequest.setId(companyId);
+    	return companyRepository.save(companyRequest);
+    }
 }
