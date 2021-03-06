@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.invocify'
-version = '1.0.2-SNAPSHOT'
+version = '1.1.0-SNAPSHOT'
 
 configurations {
     compileOnly {
@@ -61,7 +61,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.8
+                minimum = 0.9
             }
             excludes = [
                     'com.invocify.invoice.entity.*',
@@ -90,7 +90,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.8
+                minimum = 0.9
             }
             excludes = [
                     'com.invocify.invoice.entity.*',

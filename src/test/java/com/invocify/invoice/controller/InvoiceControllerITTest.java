@@ -248,6 +248,43 @@ class InvoiceControllerITTest {
 	}
 
 	@Test
+	public void getListOfAllInvoicesWithPaginationAndSorting() throws Exception{
+		for (int i =0;i<10;i++) {
+			createInvoice(i);
+			Thread.sleep(1000);
+		}
+		Thread.sleep(2000);
+		for (int i =10;i<20;i++) {
+			createInvoice(i);
+		}
+
+		mockMvc.perform(get("/api/v1/invocify/invoices")
+				.param("filterDuration", "2")
+				.param("filterUnit", "SECONDS")
+				.param("disableFilter","true"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.invoices.length()").value(10))
+				.andExpect(jsonPath("$.totalPages").value(2))
+				.andExpect(jsonPath("$.totalElements").value(20))
+				//validate that first element is last added element and last element is oldest added element
+				.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 19"))
+				.andExpect(jsonPath("$.invoices[9].lineItems[0].description").value("Service line item 10"));
+
+		mockMvc.perform(get("/api/v1/invocify/invoices")
+				.param("page","1")
+				.param("filterDuration", "2")
+				.param("filterUnit", "SECONDS")
+				.param("disableFilter","true"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.invoices.length()").value(10))
+				.andExpect(jsonPath("$.totalPages").value(2))
+				.andExpect(jsonPath("$.totalElements").value(20))
+				//validate that first element is last added element and last element is oldest added element
+				.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 9"))
+				.andExpect(jsonPath("$.invoices[9].lineItems[0].description").value("Service line item 0"));
+  }
+  
+  @Test
 	public void addLineItemsToNonExistingInvoice() throws Exception {
 		LineItem lineItem3 = LineItem.builder().description("flat line item3").quantity(1).rate(new BigDecimal(5.5))
 				.rateType("flat").build();
