@@ -54,7 +54,7 @@ public class ModifyCompanyIntTest {
     	 
     	 mockMvc.perform(put("/api/v1/invocify/companies/{companyId}",id)
     			 .contentType(MediaType.APPLICATION_JSON)
-                 .content(mapper.writeValueAsString(modify(company))))
+                 .content(mapper.writeValueAsString(modifiedCompany())))
     	 .andExpect(status().isOk())
     	 .andExpect(jsonPath("$.id").value(id.toString()))
          .andExpect(jsonPath("$.name").value("Ofe's Company"))
@@ -62,19 +62,29 @@ public class ModifyCompanyIntTest {
          .andExpect(jsonPath("$.city").value("Frisco"))
          .andExpect(jsonPath("$.state").value("TX"))
          .andExpect(jsonPath("$.postalCode").value("00000"))
-         .andExpect(jsonPath("$.active").value(true));
-    	
-    	
+         .andExpect(jsonPath("$.active").value(true));   	
     }
     
-    private Company modify(Company company) {
-		company.setActive(true);
-		company.setCity("Frisco");
-		company.setName("Ofe's Company");
-		company.setState("TX");
-		company.setPostalCode("00000");
-		company.setStreet("999 Fun Street");
-		return company;
+	@Test
+	public void modifyCompany_InvalidCompany() throws Exception {
+
+		setId(UUID.randomUUID());
+
+		mockMvc.perform(put("/api/v1/invocify/companies/{companyId}", id)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(modifiedCompany())))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.length()").value(1))
+				.andExpect(jsonPath("$[0]").value(String.format("Given company not found: %s",id.toString())));
+	}
+    
+    private Company modifiedCompany() {
+		return Company.builder().active(true)
+		.city("Frisco")
+		.name("Ofe's Company")
+		.state("TX")
+		.postalCode("00000")
+		.street("999 Fun Street").build();
 	}
 
 	private void setId(UUID id) {

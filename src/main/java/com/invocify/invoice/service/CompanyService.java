@@ -1,6 +1,7 @@
 package com.invocify.invoice.service;
 
 import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.model.CompanyDetail;
 import com.invocify.invoice.model.CompanySV;
 import com.invocify.invoice.repository.CompanyRepository;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class CompanyService {
+public class CompanyService extends AbstractInvocifyService {
 
     private CompanyRepository companyRepository;
 
@@ -55,7 +56,8 @@ public class CompanyService {
         return companyRepository.save(company);
     }
     
-    public Company modifyCompany(UUID companyId, Company companyRequest) {    	
+    public Company modifyCompany(UUID companyId, Company companyRequest) throws InvalidCompanyException {    
+    	getCompanyOrThrowException(companyRepository, companyId);
     	companyRequest.setId(companyId);
     	return companyRepository.save(companyRequest);
     }

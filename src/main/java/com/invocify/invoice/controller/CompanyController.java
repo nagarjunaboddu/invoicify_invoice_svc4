@@ -1,6 +1,7 @@
 package com.invocify.invoice.controller;
 
 import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.model.CompanySV;
 import com.invocify.invoice.service.CompanyService;
 
@@ -46,7 +47,7 @@ public class CompanyController {
 	@Operation(description = "Ability to update company details and also update the active status. All fields are required*",
 			summary = "Updates the company detail for given company id")
 	@PutMapping("/{companyId}")
-	public Company modifyCompany(@PathVariable UUID companyId, @Valid @RequestBody Company company) {
+	public Company modifyCompany(@PathVariable UUID companyId, @Valid @RequestBody Company company) throws InvalidCompanyException {
 		return service.modifyCompany(companyId, company);
 	}
 
