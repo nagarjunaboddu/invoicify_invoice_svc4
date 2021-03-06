@@ -61,6 +61,7 @@ public class Invoice {
 	 * Initializes date before saving the entity
 	 */
 	@PrePersist
+	@PreUpdate
 	private void prePersist() {
 		this.createdDate = new Date();
 	}

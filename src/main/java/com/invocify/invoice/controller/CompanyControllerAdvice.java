@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.invocify.invoice.exception.InvoiceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,6 +35,10 @@ public class CompanyControllerAdvice {
     public List<String> handleInvalidCompanyException(InvalidCompanyException invalidCompanyException) {
         return Arrays.asList(invalidCompanyException.getMessage());
     }
-    
+    @ExceptionHandler(InvoiceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public List<String> handleInvoiceNotFoundException(InvoiceNotFoundException invoiceNotFoundException) {
+        return Arrays.asList(invoiceNotFoundException.getMessage());
+    }
 
 }

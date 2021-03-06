@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import com.invocify.invoice.exception.InvoiceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,12 +14,16 @@ import org.springframework.stereotype.Service;
 
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
+import com.invocify.invoice.entity.LineItem;
 import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.repository.CompanyRepository;
 import com.invocify.invoice.repository.InvoiceRepository;
 
 import lombok.AllArgsConstructor;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -44,7 +49,13 @@ public class InvoiceService {
 		return new Invoice(invoiceRequest.getAuthor(), invoiceRequest.getLineItems(), company);
 	}
 
-	public Page<Invoice> getInvoices(int page, long chronoValue, ChronoUnit chronoUnit , boolean disableFilter) {
+	public Invoice addLineItemsToInvoice(UUID invoiceId, List<LineItem> lineItems) throws InvoiceNotFoundException {
+		Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new InvoiceNotFoundException(invoiceId));
+		invoice.getLineItems().addAll(lineItems);
+		return invoiceRepository.save(invoice);
+	}
+
+  public Page<Invoice> getInvoices(int page, long chronoValue, ChronoUnit chronoUnit , boolean disableFilter) {
 		Pageable sortByDateWithTenEntries = PageRequest.of(page, NUMBER_OF_ELEMENTS,
 				Sort.by("createdDate").descending());
 		return disableFilter? invoiceRepository.findAll(sortByDateWithTenEntries) :
