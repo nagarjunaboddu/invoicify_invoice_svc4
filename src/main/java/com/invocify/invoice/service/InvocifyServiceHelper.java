@@ -6,7 +6,7 @@ import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.repository.CompanyRepository;
 
-public class AbstractInvocifyService {
+public class InvocifyServiceHelper {
 
 	public Company getCompanyOrThrowException(CompanyRepository repository, UUID companyId)
 			throws InvalidCompanyException {

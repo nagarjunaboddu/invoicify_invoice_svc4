@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class InvoiceService extends AbstractInvocifyService {
+public class InvoiceService extends InvocifyServiceHelper {
 
 	/**
 	 * repository is getting injected using constructor provided by

@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.model.CompanyRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -78,8 +79,8 @@ public class ModifyCompanyIntTest {
 				.andExpect(jsonPath("$[0]").value(String.format("Given company not found: %s",id.toString())));
 	}
     
-    private Company modifiedCompany() {
-		return Company.builder().active(true)
+    private CompanyRequest modifiedCompany() {
+		return CompanyRequest.builder().active(true)
 		.city("Frisco")
 		.name("Ofe's Company")
 		.state("TX")
