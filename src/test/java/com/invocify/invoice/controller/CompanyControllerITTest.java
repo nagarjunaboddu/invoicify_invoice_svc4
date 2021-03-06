@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -215,6 +217,7 @@ public class CompanyControllerITTest {
                 .andExpect(jsonPath("$[1].postalCode").value("75036"));
 
     }
+    
     @Test
     public void archiveCompany() throws Exception {
         Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
@@ -234,15 +237,25 @@ public class CompanyControllerITTest {
 
 
     }
+    
+    @Test
+    public void archiveCompany_InvalidCompany() throws Exception {     
+    	UUID id = UUID.randomUUID();   
+
+        mockMvc.perform(patch("/api/v1/invocify/companies/{companyId}/status", id))
+                .andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.length()").value(1))
+				.andExpect(jsonPath("$[0]").value(String.format("Given company not found: %s",id.toString())));
+
+    }
+    
     @Test
     public void viewActiveCompaniesSimpleView() throws Exception {
         Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
                 .postalCode("75035").build();
-
-        Company companyEntity = companyRepository.save(company);
-
+        companyRepository.save(company);
 
         Company company1 = Company.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
@@ -274,8 +287,7 @@ public class CompanyControllerITTest {
                 .state("California")
                 .postalCode("75035").build();
 
-        Company companyEntity = companyRepository.save(company);
-
+        companyRepository.save(company);
 
         Company company1 = Company.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
@@ -307,8 +319,7 @@ public class CompanyControllerITTest {
                 .state("California")
                 .postalCode("75035").build();
 
-        Company companyEntity = companyRepository.save(company);
-
+        companyRepository.save(company);
 
         Company company1 = Company.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
@@ -345,8 +356,7 @@ public class CompanyControllerITTest {
                 .state("California")
                 .postalCode("75035").build();
 
-        Company companyEntity = companyRepository.save(company);
-
+        companyRepository.save(company);
 
         Company company1 = Company.builder().name("Apple").street("430 CreditValley")
                 .city("New York")

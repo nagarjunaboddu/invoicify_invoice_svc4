@@ -50,8 +50,8 @@ public class CompanyService extends AbstractInvocifyService {
         }
     }
 
-    public Company archiveCompany(UUID companyId) {
-        Company company = companyRepository.findById(companyId).get();
+    public Company archiveCompany(UUID companyId) throws InvalidCompanyException {
+        Company company = getCompanyOrThrowException(companyRepository, companyId);
         company.setActive(false);
         return companyRepository.save(company);
     }

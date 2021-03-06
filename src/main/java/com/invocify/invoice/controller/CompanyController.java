@@ -40,7 +40,7 @@ public class CompanyController {
 	}
 
 	@PatchMapping("/{companyId}/status")
-	public Company archiveCompany(@PathVariable UUID companyId) {
+	public Company archiveCompany(@PathVariable UUID companyId) throws InvalidCompanyException {
 		return service.archiveCompany(companyId);
 	}
 
