@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class InvoiceService {
+public class InvoiceService extends AbstractInvocifyService {
 
 	/**
 	 * repository is getting injected using constructor provided by
@@ -39,8 +39,7 @@ public class InvoiceService {
 	private static final int NUMBER_OF_ELEMENTS = 10;
 
 	public Invoice createInvoice(InvoiceRequest invoiceRequest) throws InvalidCompanyException {
-		Company company = companyRepository.findById(invoiceRequest.getCompany_id())
-				.orElseThrow(() -> new InvalidCompanyException(invoiceRequest.getCompany_id()));
+		Company company = getCompanyOrThrowException(companyRepository, invoiceRequest.getCompany_id());
 		Invoice invoice = buildInvoiceEntity(invoiceRequest, company);
 		return invoiceRepository.save(invoice);
 	}
