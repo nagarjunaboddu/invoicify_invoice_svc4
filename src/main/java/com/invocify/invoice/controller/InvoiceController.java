@@ -1,16 +1,18 @@
 package com.invocify.invoice.controller;
 
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
+import com.invocify.invoice.exception.InvoiceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.invocify.invoice.entity.Invoice;
+import com.invocify.invoice.entity.LineItem;
 import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.model.InvoiceListResponse;
 import com.invocify.invoice.model.InvoiceRequest;
@@ -59,4 +62,11 @@ public class InvoiceController {
 	private InvoiceListResponse invoiceResponse(Page<Invoice> pages) {
 		return new InvoiceListResponse(pages.toList(), pages.getTotalPages(), pages.getTotalElements());
 	}
+
+
+    @PatchMapping("/{invoiceId}/lineItems")
+    @ResponseStatus(HttpStatus.OK)
+    public Invoice addLineItemsToExistingInvoice(@PathVariable UUID invoiceId , @RequestBody List<LineItem> lineItems) throws InvoiceNotFoundException {
+        return invoiceService.addLineItemsToInvoice(invoiceId, lineItems);
+    }
 }
