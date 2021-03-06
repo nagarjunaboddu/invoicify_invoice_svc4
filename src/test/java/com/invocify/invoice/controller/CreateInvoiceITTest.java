@@ -40,7 +40,7 @@ public class CreateInvoiceITTest {
     private InvoiceRepository invoiceRepository;
 
     @Test
-    public void createInvoicewithLineItems() throws Exception {
+    public void createInvoicewithLineItems_ValidateLineItems() throws Exception {
 
         Company company = companyRepository.save(HelperClass.requestCompany());
         Invoice invoice = HelperClass.expectedInvoice(company);
