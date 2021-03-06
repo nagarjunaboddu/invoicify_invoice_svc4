@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.invocify.invoice.exception.InvoiceAlreadyPaidException;
 import com.invocify.invoice.exception.InvoiceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
@@ -39,6 +40,12 @@ public class CompanyControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public List<String> handleInvoiceNotFoundException(InvoiceNotFoundException invoiceNotFoundException) {
         return Arrays.asList(invoiceNotFoundException.getMessage());
+    }
+
+    @ExceptionHandler(InvoiceAlreadyPaidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<String> handleInvoiceAlreadyPaidException(InvoiceAlreadyPaidException invoiceAlreadyPaidException) {
+        return Arrays.asList(invoiceAlreadyPaidException.getMessage());
     }
 
 }

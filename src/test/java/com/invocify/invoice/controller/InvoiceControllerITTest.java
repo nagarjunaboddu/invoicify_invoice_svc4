@@ -402,7 +402,7 @@ class InvoiceControllerITTest {
 
 	private Invoice getInvoiceWithTwoLineItemsAndCompany() throws Exception {
 		Company company = companyRepository.save(HelperClass.requestCompany());
-		Invoice invoice = HelperClass.expectedPaidInvoice(company);
+		Invoice invoice = HelperClass.expectedUnPaidInvoice(company);
 		InvoiceRequest requestInvoice = HelperClass.requestInvoiceWithLineItems(invoice);
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isCreated());
@@ -410,6 +410,41 @@ class InvoiceControllerITTest {
 		return invoice1;
 	}
 
+	private Invoice getPaidInvoiceWithTwoLineItemsAndCompany() throws Exception {
+		Company company = companyRepository.save(HelperClass.requestCompany());
+		Invoice invoice = HelperClass.expectedPaidInvoice(company);
+		InvoiceRequest requestInvoice = HelperClass.requestInvoiceWithLineItems(invoice);
+		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isCreated());
+		Invoice invoice1 = invoiceRepository.findAll().get(0);
+		invoice1.setPaidStatus(true);
+		return invoiceRepository.save(invoice1);
 
+	}
+
+	@Test
+	public void updatePaidInvoice() throws Exception {
+		Invoice invoice1 = getPaidInvoiceWithTwoLineItemsAndCompany();
+		Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+				.city("New York")
+				.state("New York")
+				.postalCode("75036").build();
+		company1= companyRepository.save(company1);
+		LineItem lineItem2 = LineItem.builder().description("Service line item 2").quantity(1).rate(new BigDecimal(150.3))
+				.rateType("flat").build();
+
+		List<LineItem> lineItemList = new ArrayList<>();
+		lineItemList.add(invoice1.getLineItems().get(0));
+		lineItemList.add(lineItem2);
+
+		Invoice invoice2 = Invoice.builder().id(invoice1.getId()).author("tech person").paidStatus(false).company(company1).lineItems(lineItemList).build();
+
+		mockMvc.perform(put("/api/v1/invocify/invoices/"+invoice1.getId()).contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(invoice2)))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.[0]").value(String.format("Paid Invoice cannot be updated: %s", invoice1.getId().toString())));
+
+
+	}
 
 }

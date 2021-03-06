@@ -11,10 +11,7 @@ import javax.persistence.*;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
@@ -45,7 +42,8 @@ public class Invoice {
 		this.lineItems = lineItems;
 	}
 
-	@Schema(defaultValue = "false")
+	//@Schema(defaultValue = "false")
+	@Setter
 	private boolean paidStatus;
 
 	/**

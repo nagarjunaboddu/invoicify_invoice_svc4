@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import com.invocify.invoice.exception.InvoiceAlreadyPaidException;
 import com.invocify.invoice.exception.InvoiceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,7 +68,11 @@ public class InvoiceService {
 		return Date.from(filterDate.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
-    public Invoice updateInvoice(UUID invoiceId, Invoice invoice) {
+    public Invoice updateInvoice(UUID invoiceId, Invoice invoice) throws InvoiceNotFoundException, InvoiceAlreadyPaidException {
+		Invoice invoice1 = invoiceRepository.findById(invoiceId).orElseThrow(() -> new InvoiceNotFoundException(invoiceId));
+		if (invoice1.isPaidStatus()){
+			throw new InvoiceAlreadyPaidException(invoiceId);
+		}
 		return invoiceRepository.save(invoice);
     }
 }

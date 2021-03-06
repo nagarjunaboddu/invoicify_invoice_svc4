@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
+import com.invocify.invoice.exception.InvoiceAlreadyPaidException;
 import com.invocify.invoice.exception.InvoiceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -61,7 +62,7 @@ public class InvoiceController {
 	}
 
 	@PutMapping("/{invoiceId}")
-	public Invoice updateInvoice(@PathVariable UUID invoiceId , @RequestBody Invoice invoice){
+	public Invoice updateInvoice(@PathVariable UUID invoiceId , @RequestBody Invoice invoice) throws InvoiceNotFoundException, InvoiceAlreadyPaidException {
 		return invoiceService.updateInvoice(invoiceId,invoice);
 	}
 
