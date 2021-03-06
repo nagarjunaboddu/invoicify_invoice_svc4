@@ -60,6 +60,11 @@ public class InvoiceController {
 		return invoiceResponse(invoiceService.getInvoices(page, filterDuration, ChronoUnit.valueOf(filterUnit),disableFilter));
 	}
 
+	@PutMapping("/{invoiceId}")
+	public Invoice updateInvoice(@PathVariable UUID invoiceId , @RequestBody Invoice invoice){
+		return invoiceService.updateInvoice(invoiceId,invoice);
+	}
+
 	private InvoiceListResponse invoiceResponse(Page<Invoice> pages) {
 		return new InvoiceListResponse(pages.toList(), pages.getTotalPages(), pages.getTotalElements());
 	}

@@ -67,4 +67,7 @@ public class InvoiceService {
 		return Date.from(filterDate.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
+    public Invoice updateInvoice(UUID invoiceId, Invoice invoice) {
+		return invoiceRepository.save(invoice);
+    }
 }

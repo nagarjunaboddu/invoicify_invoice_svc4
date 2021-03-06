@@ -1,5 +1,6 @@
 package com.invocify.invoice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
@@ -351,5 +352,73 @@ class InvoiceControllerITTest {
 				.andExpect(jsonPath("$.lineItems[3].rate").value(5.7))
 				.andExpect(jsonPath("$.lineItems[3].totalFees").value(17.1));
 	}
+
+
+	@Test
+	public void updateExistingInvoice() throws Exception {
+		Invoice invoice1 = getInvoiceWithTwoLineItemsAndCompany();
+		Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+				.city("New York")
+				.state("New York")
+				.postalCode("75036").build();
+		company1= companyRepository.save(company1);
+		LineItem lineItem2 = LineItem.builder().description("Service line item 2").quantity(1).rate(new BigDecimal(150.3))
+				.rateType("flat").build();
+
+		List<LineItem> lineItemList = new ArrayList<>();
+		lineItemList.add(invoice1.getLineItems().get(0));
+		lineItemList.add(lineItem2);
+
+		Invoice invoice2 = Invoice.builder().id(invoice1.getId()).author("tech person").paidStatus(true).company(company1).lineItems(lineItemList).build();
+
+		mockMvc.perform(put("/api/v1/invocify/invoices/"+invoice1.getId()).contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(invoice2)))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(invoice1.getId().toString())).andExpect(jsonPath("$.author").value(invoice2.getAuthor()))
+				.andExpect(jsonPath("$.createdDate").value(not(invoice1.getCreatedDate())))
+				.andExpect(jsonPath("$.totalCost").value(165.6))
+				.andExpect(jsonPath("$.company.id").value(company1.getId().toString()))
+				.andExpect(jsonPath("$.company.name").value(company1.getName()))
+				.andExpect(jsonPath("$.company.street").value(company1.getStreet()))
+				.andExpect(jsonPath("$.company.city").value(company1.getCity()))
+				.andExpect(jsonPath("$.company.state").value(company1.getState()))
+				.andExpect(jsonPath("$.company.postalCode").value(company1.getPostalCode()))
+				.andExpect(jsonPath("$.lineItems.length()").value(2))
+				.andExpect(jsonPath("$.lineItems[0].id").exists())
+				.andExpect(jsonPath("$.lineItems[0].description").value("Service line item"))
+				.andExpect(jsonPath("$.lineItems[0].quantity").value(1))
+				.andExpect(jsonPath("$.lineItems[0].rateType").value("flat"))
+				.andExpect(jsonPath("$.lineItems[0].rate").value(15.3))
+				.andExpect(jsonPath("$.lineItems[0].totalFees").value(15.3))
+				.andExpect(jsonPath("$.lineItems[1].id").exists())
+				.andExpect(jsonPath("$.lineItems[1].description").value("Service line item 2"))
+				.andExpect(jsonPath("$.lineItems[1].quantity").value(1))
+				.andExpect(jsonPath("$.lineItems[1].rateType").value("flat"))
+				.andExpect(jsonPath("$.lineItems[1].rate").value(150.3))
+				.andExpect(jsonPath("$.lineItems[1].totalFees").value(150.3));
+
+	}
+
+	private Invoice getInvoiceWithTwoLineItemsAndCompany() throws Exception {
+		Company company = companyRepository.save(HelperClass.requestCompany());
+		Invoice invoice = HelperClass.expectedInvoice(company);
+		InvoiceRequest requestInvoice = HelperClass.requestInvoice(invoice);
+		LineItem lineItem = LineItem.builder().description("Service line item").quantity(1).rate(new BigDecimal(15.3))
+				.rateType("flat").build();
+		LineItem lineItem1 = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
+				.rateType("rate").build();
+		requestInvoice.setLineItems(new ArrayList<LineItem>() {
+			{
+				add(lineItem);
+				add(lineItem1);
+			}
+		});
+		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isCreated());
+		Invoice invoice1 = invoiceRepository.findAll().get(0);
+		return invoice1;
+	}
+
+
 
 }
