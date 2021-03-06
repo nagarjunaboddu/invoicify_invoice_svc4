@@ -369,7 +369,7 @@ class InvoiceControllerITTest {
 		lineItemList.add(invoice1.getLineItems().get(0));
 		lineItemList.add(lineItem2);
 
-		Invoice invoice2 = Invoice.builder().id(invoice1.getId()).author("tech person").paidStatus(true).company(company1).lineItems(lineItemList).build();
+		Invoice invoice2 = Invoice.builder().id(invoice1.getId()).author("tech person").paidStatus(false).company(company1).lineItems(lineItemList).build();
 
 		mockMvc.perform(put("/api/v1/invocify/invoices/"+invoice1.getId()).contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(invoice2)))
@@ -377,6 +377,7 @@ class InvoiceControllerITTest {
 				.andExpect(jsonPath("$.id").value(invoice1.getId().toString())).andExpect(jsonPath("$.author").value(invoice2.getAuthor()))
 				.andExpect(jsonPath("$.createdDate").value(not(invoice1.getCreatedDate())))
 				.andExpect(jsonPath("$.totalCost").value(165.6))
+				.andExpect(jsonPath("$.paidStatus").value(false))
 				.andExpect(jsonPath("$.company.id").value(company1.getId().toString()))
 				.andExpect(jsonPath("$.company.name").value(company1.getName()))
 				.andExpect(jsonPath("$.company.street").value(company1.getStreet()))
@@ -401,18 +402,8 @@ class InvoiceControllerITTest {
 
 	private Invoice getInvoiceWithTwoLineItemsAndCompany() throws Exception {
 		Company company = companyRepository.save(HelperClass.requestCompany());
-		Invoice invoice = HelperClass.expectedInvoice(company);
-		InvoiceRequest requestInvoice = HelperClass.requestInvoice(invoice);
-		LineItem lineItem = LineItem.builder().description("Service line item").quantity(1).rate(new BigDecimal(15.3))
-				.rateType("flat").build();
-		LineItem lineItem1 = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
-				.rateType("rate").build();
-		requestInvoice.setLineItems(new ArrayList<LineItem>() {
-			{
-				add(lineItem);
-				add(lineItem1);
-			}
-		});
+		Invoice invoice = HelperClass.expectedPaidInvoice(company);
+		InvoiceRequest requestInvoice = HelperClass.requestInvoiceWithLineItems(invoice);
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isCreated());
 		Invoice invoice1 = invoiceRepository.findAll().get(0);
