@@ -51,9 +51,10 @@ public class InvoiceController {
 	@GetMapping
 	public InvoiceListResponse getInvoices(
 			@PositiveOrZero @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+			@RequestParam(required = false) boolean disableFilter,
 			@Parameter(hidden = false) @Positive @RequestParam(required = false, defaultValue = DEFAULT_FILTERDURATION) Long filterDuration,
 			@Parameter(hidden = false, example = "YEARS,MONTHS,DAYS,MINUTES") @RequestParam(required = false, defaultValue = DEFAULT_FILTERUNIT) String filterUnit) {
-		return invoiceResponse(invoiceService.getInvoices(page, filterDuration, ChronoUnit.valueOf(filterUnit)));
+		return invoiceResponse(invoiceService.getInvoices(page, filterDuration, ChronoUnit.valueOf(filterUnit),disableFilter));
 	}
 
 	private InvoiceListResponse invoiceResponse(Page<Invoice> pages) {

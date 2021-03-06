@@ -44,10 +44,11 @@ public class InvoiceService {
 		return new Invoice(invoiceRequest.getAuthor(), invoiceRequest.getLineItems(), company);
 	}
 
-	public Page<Invoice> getInvoices(int page, long chronoValue, ChronoUnit chronoUnit) {
+	public Page<Invoice> getInvoices(int page, long chronoValue, ChronoUnit chronoUnit , boolean disableFilter) {
 		Pageable sortByDateWithTenEntries = PageRequest.of(page, NUMBER_OF_ELEMENTS,
 				Sort.by("createdDate").descending());
-		return invoiceRepository.findByCreatedDateAfter(sortByDateWithTenEntries, filterDate(chronoValue, chronoUnit));
+		return disableFilter? invoiceRepository.findAll(sortByDateWithTenEntries) :
+				invoiceRepository.findByCreatedDateAfter(sortByDateWithTenEntries, filterDate(chronoValue, chronoUnit));
 	}
 
 	private Date filterDate(long chronoValue, ChronoUnit chronoUnit) {
