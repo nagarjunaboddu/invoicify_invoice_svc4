@@ -1,7 +1,9 @@
 package com.invocify.invoice.service;
 
 import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.model.CompanyDetail;
+import com.invocify.invoice.model.CompanyRequest;
 import com.invocify.invoice.model.CompanySV;
 import com.invocify.invoice.repository.CompanyRepository;
 import lombok.AllArgsConstructor;
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class CompanyService {
+public class CompanyService extends InvocifyServiceHelper {
 
     private CompanyRepository companyRepository;
 
@@ -49,9 +51,15 @@ public class CompanyService {
         }
     }
 
-    public Company archiveCompany(UUID companyId) {
-        Company company = companyRepository.findById(companyId).get();
+    public Company archiveCompany(UUID companyId) throws InvalidCompanyException {
+        Company company = getCompanyOrThrowException(companyRepository, companyId);
         company.setActive(false);
         return companyRepository.save(company);
+    }
+    
+    public Company modifyCompany(UUID companyId, CompanyRequest companyRequest) throws InvalidCompanyException {    
+    	Company company = getCompanyOrThrowException(companyRepository, companyId);
+    	BeanUtils.copyProperties(companyRequest, company);
+    	return companyRepository.save(company);
     }
 }
