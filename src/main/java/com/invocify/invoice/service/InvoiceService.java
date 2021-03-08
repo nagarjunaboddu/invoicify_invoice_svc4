@@ -73,8 +73,7 @@ public class InvoiceService extends InvocifyServiceHelper {
 		if (invoice.isPaidStatus()){
 			throw new InvoiceAlreadyPaidException(invoiceId);
 		}
-		Company company = companyRepository.findById(invoiceRequest.getCompany_id())
-				.orElseThrow(() -> new InvalidCompanyException(invoiceRequest.getCompany_id()));
+		Company company = getCompanyOrThrowException(companyRepository, invoiceRequest.getCompany_id());
 
 		Invoice updatedInvoiceEntity = buildUpdatedInvoiceEntity(invoice,invoiceRequest,company);
 		return invoiceRepository.save(updatedInvoiceEntity);
