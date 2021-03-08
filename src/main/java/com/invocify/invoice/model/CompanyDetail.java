@@ -8,10 +8,11 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name","street", "city", "state", "postalCode" })
+@JsonPropertyOrder({"id", "name","street", "city", "state", "postalCode","active" })
 public class CompanyDetail extends CompanySV {
 
     private UUID id;
     private String street;
     private String postalCode;
+    private boolean active;
 }

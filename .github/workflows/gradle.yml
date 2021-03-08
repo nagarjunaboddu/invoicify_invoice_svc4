@@ -22,3 +22,11 @@ jobs:
       run: chmod +x gradlew
     - name: Test and validate Code Coverage with Gradle
       run: ./gradlew test jacocoTestCoverageVerification
+    
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+         files: build/reports/jacoco/test/jacocoTestReport.xml
+         check_name: Unit Test Results
+         comment_title: Test Report
