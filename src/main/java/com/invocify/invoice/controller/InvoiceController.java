@@ -8,7 +8,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
+import com.invocify.invoice.exception.InvoiceAlreadyPaidException;
 import com.invocify.invoice.exception.InvoiceNotFoundException;
+import com.invocify.invoice.model.InvoiceUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -58,6 +60,11 @@ public class InvoiceController {
 			@Parameter(hidden = false) @Positive @RequestParam(required = false, defaultValue = DEFAULT_FILTERDURATION) Long filterDuration,
 			@Parameter(hidden = false, example = "YEARS,MONTHS,DAYS,MINUTES") @RequestParam(required = false, defaultValue = DEFAULT_FILTERUNIT) String filterUnit) {
 		return invoiceResponse(invoiceService.getInvoices(page, filterDuration, ChronoUnit.valueOf(filterUnit),disableFilter));
+	}
+
+	@PutMapping("/{invoiceId}")
+	public Invoice updateInvoice(@PathVariable UUID invoiceId , @Valid @RequestBody InvoiceUpdateRequest invoiceUpdateRequest) throws InvoiceNotFoundException, InvoiceAlreadyPaidException, InvalidCompanyException {
+		return invoiceService.updateInvoice(invoiceId,invoiceUpdateRequest);
 	}
 
 	private InvoiceListResponse invoiceResponse(Page<Invoice> pages) {
