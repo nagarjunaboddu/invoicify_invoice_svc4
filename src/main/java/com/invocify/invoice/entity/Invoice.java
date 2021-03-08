@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.persistence.*;
 
+import com.invocify.invoice.model.InvoiceUpdateRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -27,6 +28,7 @@ public class Invoice {
 
 	@ManyToOne
 	private Company company;
+
 	private String author;
 
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
@@ -42,7 +44,7 @@ public class Invoice {
 		this.lineItems = lineItems;
 	}
 
-	//@Schema(defaultValue = "false")
+	@Schema(defaultValue = "false")
 	@Setter
 	private boolean paidStatus;
 

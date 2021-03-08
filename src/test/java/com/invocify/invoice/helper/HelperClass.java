@@ -89,9 +89,4 @@ public class HelperClass {
                 .build();
     }
 
-    public static InvoiceUpdateRequest requestInvoiceWithLineItems(Invoice expectedInvoice) {
-        return new InvoiceUpdateRequest(expectedInvoice.getAuthor(), expectedInvoice.getCompany().getId() ,
-                expectedInvoice.getLineItems(),expectedInvoice.isPaidStatus());
-    }
-
 }

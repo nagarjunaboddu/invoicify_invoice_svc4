@@ -7,6 +7,7 @@ import java.util.Date;
 
 import com.invocify.invoice.exception.InvoiceAlreadyPaidException;
 import com.invocify.invoice.exception.InvoiceNotFoundException;
+import com.invocify.invoice.model.InvoiceUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -67,11 +68,23 @@ public class InvoiceService extends InvocifyServiceHelper {
 		return Date.from(filterDate.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
-    public Invoice updateInvoice(UUID invoiceId, Invoice invoice) throws InvoiceNotFoundException, InvoiceAlreadyPaidException {
-		Invoice invoice1 = invoiceRepository.findById(invoiceId).orElseThrow(() -> new InvoiceNotFoundException(invoiceId));
-		if (invoice1.isPaidStatus()){
+	public Invoice updateInvoice(UUID invoiceId, InvoiceUpdateRequest invoiceRequest) throws InvoiceNotFoundException, InvoiceAlreadyPaidException, InvalidCompanyException {
+		Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new InvoiceNotFoundException(invoiceId));
+		if (invoice.isPaidStatus()){
 			throw new InvoiceAlreadyPaidException(invoiceId);
 		}
-		return invoiceRepository.save(invoice);
-    }
+		Company company = companyRepository.findById(invoiceRequest.getCompany_id())
+				.orElseThrow(() -> new InvalidCompanyException(invoiceRequest.getCompany_id()));
+
+		Invoice updatedInvoiceEntity = buildUpdatedInvoiceEntity(invoice,invoiceRequest,company);
+		return invoiceRepository.save(updatedInvoiceEntity);
+	}
+
+	private Invoice buildUpdatedInvoiceEntity(Invoice invoice, InvoiceUpdateRequest invoiceRequest, Company company) {
+		return Invoice.builder().id(invoice.getId())
+				.author(invoiceRequest.getAuthor())
+				.company(company)
+				.lineItems(invoiceRequest.getLineItems())
+				.paidStatus(invoiceRequest.isPaidStatus()).build();
+	}
 }
