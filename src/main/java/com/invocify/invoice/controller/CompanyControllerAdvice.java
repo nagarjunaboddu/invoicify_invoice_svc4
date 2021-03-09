@@ -1,14 +1,10 @@
 package com.invocify.invoice.controller;
 
 
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.invocify.invoice.exception.InvoiceAlreadyPaidException;
 import com.invocify.invoice.exception.InvoiceNotFoundException;
+import com.invocify.invoice.model.BaseResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,29 +19,38 @@ public class CompanyControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public List<String> handleNotFound(MethodArgumentNotValidException methodArgumentNotValidException) throws Exception {
-        List<String> result = methodArgumentNotValidException.getAllErrors().stream().map(ObjectError::getDefaultMessage
-        ).collect(Collectors.toList());
-        Collections.sort(result);
-        return result;
-    }
+	public BaseResponse handleNotFound(MethodArgumentNotValidException methodArgumentNotValidException)
+			throws Exception {
+		BaseResponse response = new BaseResponse();
+		methodArgumentNotValidException.getAllErrors().stream().map(ObjectError::getDefaultMessage)
+				.forEach(error -> response.appendErrors(error));
+		return response;
+	}
     
     
     @ExceptionHandler(InvalidCompanyException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public List<String> handleInvalidCompanyException(InvalidCompanyException invalidCompanyException) {
-        return Arrays.asList(invalidCompanyException.getMessage());
+    public BaseResponse handleInvalidCompanyException(InvalidCompanyException invalidCompanyException) {
+    	return generateResponse(invalidCompanyException.getMessage());
     }
+	
     @ExceptionHandler(InvoiceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public List<String> handleInvoiceNotFoundException(InvoiceNotFoundException invoiceNotFoundException) {
-        return Arrays.asList(invoiceNotFoundException.getMessage());
+    public BaseResponse handleInvoiceNotFoundException(InvoiceNotFoundException invoiceNotFoundException) {    	
+    	return generateResponse(invoiceNotFoundException.getMessage());
+      
     }
 
     @ExceptionHandler(InvoiceAlreadyPaidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public List<String> handleInvoiceAlreadyPaidException(InvoiceAlreadyPaidException invoiceAlreadyPaidException) {
-        return Arrays.asList(invoiceAlreadyPaidException.getMessage());
+    public BaseResponse handleInvoiceAlreadyPaidException(InvoiceAlreadyPaidException invoiceAlreadyPaidException) {
+    	return generateResponse(invoiceAlreadyPaidException.getMessage());
     }
+    
+    private BaseResponse generateResponse(String error) {
+		BaseResponse response = new BaseResponse();
+    	response.appendErrors(error);
+        return response;
+	}
 
 }

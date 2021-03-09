@@ -58,7 +58,7 @@ public class ModifyInvoiceITTest {
         mockMvc.perform(patch("/api/v1/invocify/invoices/{invoiceId}/lineItems", randomUUID )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(patchLineItems))).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.[0]").value(String.format("Given Invoice not found: %s", randomUUID.toString())));
+                .andExpect(jsonPath("$.errors.[0]").value(String.format("Given Invoice not found: %s", randomUUID.toString())));
     }
 
     @Test
@@ -89,28 +89,28 @@ public class ModifyInvoiceITTest {
         mockMvc.perform(patch("/api/v1/invocify/invoices/{invoiceId}/lineItems",invoice1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(patchLineItems))).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.author").value(requestInvoice.getAuthor()))
-                .andExpect(jsonPath("$.createdDate").value(not(invoice1.getCreatedDate())))
-                .andExpect(jsonPath("$.totalCost").value(79.1))
-                .andExpect(jsonPath("$.company.id").value(company.getId().toString()))
-                .andExpect(jsonPath("$.company.name").value(company.getName()))
-                .andExpect(jsonPath("$.company.street").value(company.getStreet()))
-                .andExpect(jsonPath("$.company.city").value(company.getCity()))
-                .andExpect(jsonPath("$.company.state").value(company.getState()))
-                .andExpect(jsonPath("$.company.postalCode").value(company.getPostalCode()))
-                .andExpect(jsonPath("$.lineItems.length()").value(4))
-                .andExpect(jsonPath("$.lineItems[2].id").exists())
-                .andExpect(jsonPath("$.lineItems[2].description").value("flat line item3"))
-                .andExpect(jsonPath("$.lineItems[2].quantity").value(1))
-                .andExpect(jsonPath("$.lineItems[2].rateType").value("flat"))
-                .andExpect(jsonPath("$.lineItems[2].rate").value(5.5))
-                .andExpect(jsonPath("$.lineItems[2].totalFees").value(5.5))
-                .andExpect(jsonPath("$.lineItems[3].id").exists())
-                .andExpect(jsonPath("$.lineItems[3].description").value("rate based line item4"))
-                .andExpect(jsonPath("$.lineItems[3].quantity").value(3))
-                .andExpect(jsonPath("$.lineItems[3].rateType").value("rate"))
-                .andExpect(jsonPath("$.lineItems[3].rate").value(5.7))
-                .andExpect(jsonPath("$.lineItems[3].totalFees").value(17.1));
+                .andExpect(jsonPath("$.data.id").exists()).andExpect(jsonPath("$.data.author").value(requestInvoice.getAuthor()))
+                .andExpect(jsonPath("$.data.createdDate").value(not(invoice1.getCreatedDate())))
+                .andExpect(jsonPath("$.data.totalCost").value(79.1))
+                .andExpect(jsonPath("$.data.company.id").value(company.getId().toString()))
+                .andExpect(jsonPath("$.data.company.name").value(company.getName()))
+                .andExpect(jsonPath("$.data.company.street").value(company.getStreet()))
+                .andExpect(jsonPath("$.data.company.city").value(company.getCity()))
+                .andExpect(jsonPath("$.data.company.state").value(company.getState()))
+                .andExpect(jsonPath("$.data.company.postalCode").value(company.getPostalCode()))
+                .andExpect(jsonPath("$.data.lineItems.length()").value(4))
+                .andExpect(jsonPath("$.data.lineItems[2].id").exists())
+                .andExpect(jsonPath("$.data.lineItems[2].description").value("flat line item3"))
+                .andExpect(jsonPath("$.data.lineItems[2].quantity").value(1))
+                .andExpect(jsonPath("$.data.lineItems[2].rateType").value("flat"))
+                .andExpect(jsonPath("$.data.lineItems[2].rate").value(5.5))
+                .andExpect(jsonPath("$.data.lineItems[2].totalFees").value(5.5))
+                .andExpect(jsonPath("$.data.lineItems[3].id").exists())
+                .andExpect(jsonPath("$.data.lineItems[3].description").value("rate based line item4"))
+                .andExpect(jsonPath("$.data.lineItems[3].quantity").value(3))
+                .andExpect(jsonPath("$.data.lineItems[3].rateType").value("rate"))
+                .andExpect(jsonPath("$.data.lineItems[3].rate").value(5.7))
+                .andExpect(jsonPath("$.data.lineItems[3].totalFees").value(17.1));
     }
 
 
@@ -134,29 +134,29 @@ public class ModifyInvoiceITTest {
         mockMvc.perform(put("/api/v1/invocify/invoices/"+invoice.getId()).contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invoiceUpdateRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(invoice.getId().toString())).andExpect(jsonPath("$.author").value(invoiceUpdateRequest.getAuthor()))
-                .andExpect(jsonPath("$.createdDate").value(not(invoice.getCreatedDate())))
-                .andExpect(jsonPath("$.totalCost").value(165.6))
-                .andExpect(jsonPath("$.paidStatus").value(true))
-                .andExpect(jsonPath("$.company.id").value(company.getId().toString()))
-                .andExpect(jsonPath("$.company.name").value(company.getName()))
-                .andExpect(jsonPath("$.company.street").value(company.getStreet()))
-                .andExpect(jsonPath("$.company.city").value(company.getCity()))
-                .andExpect(jsonPath("$.company.state").value(company.getState()))
-                .andExpect(jsonPath("$.company.postalCode").value(company.getPostalCode()))
-                .andExpect(jsonPath("$.lineItems.length()").value(2))
-                .andExpect(jsonPath("$.lineItems[0].id").exists())
-                .andExpect(jsonPath("$.lineItems[0].description").value("Service line item"))
-                .andExpect(jsonPath("$.lineItems[0].quantity").value(1))
-                .andExpect(jsonPath("$.lineItems[0].rateType").value("flat"))
-                .andExpect(jsonPath("$.lineItems[0].rate").value(15.3))
-                .andExpect(jsonPath("$.lineItems[0].totalFees").value(15.3))
-                .andExpect(jsonPath("$.lineItems[1].id").exists())
-                .andExpect(jsonPath("$.lineItems[1].description").value("Service line item 2"))
-                .andExpect(jsonPath("$.lineItems[1].quantity").value(1))
-                .andExpect(jsonPath("$.lineItems[1].rateType").value("flat"))
-                .andExpect(jsonPath("$.lineItems[1].rate").value(150.3))
-                .andExpect(jsonPath("$.lineItems[1].totalFees").value(150.3));
+                .andExpect(jsonPath("$.data.id").value(invoice.getId().toString())).andExpect(jsonPath("$.data.author").value(invoiceUpdateRequest.getAuthor()))
+                .andExpect(jsonPath("$.data.createdDate").value(not(invoice.getCreatedDate())))
+                .andExpect(jsonPath("$.data.totalCost").value(165.6))
+                .andExpect(jsonPath("$.data.paidStatus").value(true))
+                .andExpect(jsonPath("$.data.company.id").value(company.getId().toString()))
+                .andExpect(jsonPath("$.data.company.name").value(company.getName()))
+                .andExpect(jsonPath("$.data.company.street").value(company.getStreet()))
+                .andExpect(jsonPath("$.data.company.city").value(company.getCity()))
+                .andExpect(jsonPath("$.data.company.state").value(company.getState()))
+                .andExpect(jsonPath("$.data.company.postalCode").value(company.getPostalCode()))
+                .andExpect(jsonPath("$.data.lineItems.length()").value(2))
+                .andExpect(jsonPath("$.data.lineItems[0].id").exists())
+                .andExpect(jsonPath("$.data.lineItems[0].description").value("Service line item"))
+                .andExpect(jsonPath("$.data.lineItems[0].quantity").value(1))
+                .andExpect(jsonPath("$.data.lineItems[0].rateType").value("flat"))
+                .andExpect(jsonPath("$.data.lineItems[0].rate").value(15.3))
+                .andExpect(jsonPath("$.data.lineItems[0].totalFees").value(15.3))
+                .andExpect(jsonPath("$.data.lineItems[1].id").exists())
+                .andExpect(jsonPath("$.data.lineItems[1].description").value("Service line item 2"))
+                .andExpect(jsonPath("$.data.lineItems[1].quantity").value(1))
+                .andExpect(jsonPath("$.data.lineItems[1].rateType").value("flat"))
+                .andExpect(jsonPath("$.data.lineItems[1].rate").value(150.3))
+                .andExpect(jsonPath("$.data.lineItems[1].totalFees").value(150.3));
 
     }
 
@@ -180,7 +180,7 @@ public class ModifyInvoiceITTest {
         mockMvc.perform(put("/api/v1/invocify/invoices/"+invoice.getId()).contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invoiceUpdateRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.[0]").value(String.format("Paid Invoice cannot be updated: %s", invoice.getId().toString())));
+                .andExpect(jsonPath("$.errors.[0]").value(String.format("Paid Invoice cannot be updated: %s", invoice.getId().toString())));
 
     }
 
@@ -203,7 +203,7 @@ public class ModifyInvoiceITTest {
         mockMvc.perform(put("/api/v1/invocify/invoices/"+invoiceRandomUUID).contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invoiceUpdateRequest)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.[0]").value(String.format("Given Invoice not found: %s", invoiceRandomUUID)));
+                .andExpect(jsonPath("$.errors.[0]").value(String.format("Given Invoice not found: %s", invoiceRandomUUID)));
 
     }
 
@@ -223,7 +223,7 @@ public class ModifyInvoiceITTest {
         mockMvc.perform(put("/api/v1/invocify/invoices/"+invoice.getId()).contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invoiceUpdateRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.[0]").value(String.format("Given company not found: %s", companyRandomUUID.toString())));
+                .andExpect(jsonPath("$.errors.[0]").value(String.format("Given company not found: %s", companyRandomUUID.toString())));
 
     }
 
@@ -236,10 +236,10 @@ public class ModifyInvoiceITTest {
         mockMvc.perform(put("/api/v1/invocify/invoices/"+invoice.getId()).contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invoiceUpdateRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.length()").value(3))
-                .andExpect(jsonPath("$.[0]").value("Atleast one line item should be present"))
-                .andExpect(jsonPath("$.[1]").value("Author should be present"))
-                .andExpect(jsonPath("$.[2]").value("Invoice should be associated with an existing company"));
+                .andExpect(jsonPath("$.errors.length()").value(3))
+                .andExpect(jsonPath("$.errors.[0]").value("Atleast one line item should be present"))
+                .andExpect(jsonPath("$.errors.[1]").value("Author should be present"))
+                .andExpect(jsonPath("$.errors.[2]").value("Invoice should be associated with an existing company"));
 
     }
 
