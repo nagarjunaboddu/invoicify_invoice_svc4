@@ -244,7 +244,9 @@ public class CompanyControllerITTest {
                 .andExpect(jsonPath("$.active").value(false))
                 .andExpect(jsonPath("$.name").value("Amazon"))
                 .andExpect(jsonPath("$.city").value("LA"))
-                .andExpect(jsonPath("$.state").value("California"));
+                .andExpect(jsonPath("$.state").value("California"))
+                .andExpect(jsonPath("$.street").value("233 Siliconvalley"))
+                .andExpect(jsonPath("$.postalCode").value("75035"));
 
 
     }
