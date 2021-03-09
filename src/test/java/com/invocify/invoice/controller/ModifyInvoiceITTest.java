@@ -128,7 +128,7 @@ public class ModifyInvoiceITTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(patchLineItems)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.[0]").value(String.format("Paid Invoice cannot be updated: %s", invoice.getId().toString())));
+                .andExpect(jsonPath("$.errors[0]").value(String.format("Paid Invoice cannot be updated: %s", invoice.getId().toString())));
 
     }
 
