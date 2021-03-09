@@ -75,7 +75,8 @@ public class InvoiceController {
 
     @PatchMapping("/{invoiceId}/lineItems")
     @ResponseStatus(HttpStatus.OK)
-    public  BaseResponse addLineItemsToExistingInvoice(@PathVariable UUID invoiceId , @RequestBody List<LineItem> lineItems) throws InvoiceNotFoundException {
+    public  BaseResponse addLineItemsToExistingInvoice(@PathVariable UUID invoiceId , @RequestBody List<LineItem> lineItems) throws InvoiceNotFoundException, InvoiceAlreadyPaidException {
         return  new BaseResponse(invoiceService.addLineItemsToInvoice(invoiceId, lineItems));
+
     }
 }
