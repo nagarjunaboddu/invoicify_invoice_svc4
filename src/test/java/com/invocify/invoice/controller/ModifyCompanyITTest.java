@@ -23,7 +23,7 @@ import com.invocify.invoice.model.CompanyRequest;
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ModifyCompanyIntTest {
+public class ModifyCompanyITTest {
 	
 	@Autowired
     MockMvc mockMvc;

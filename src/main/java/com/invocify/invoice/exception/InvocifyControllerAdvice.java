@@ -1,8 +1,6 @@
-package com.invocify.invoice.controller;
+package com.invocify.invoice.exception;
 
 
-import com.invocify.invoice.exception.InvoiceAlreadyPaidException;
-import com.invocify.invoice.exception.InvoiceNotFoundException;
 import com.invocify.invoice.model.BaseResponse;
 
 import org.springframework.http.HttpStatus;
@@ -12,10 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.invocify.invoice.exception.InvalidCompanyException;
-
 @RestControllerAdvice
-public class CompanyControllerAdvice {
+public class InvocifyControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

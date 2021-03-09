@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CompanySV {
+public class CompanyBaseResponse {
 
 	private UUID id;
     private String name;

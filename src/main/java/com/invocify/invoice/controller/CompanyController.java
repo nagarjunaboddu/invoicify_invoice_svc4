@@ -4,7 +4,7 @@ import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.exception.InvalidCompanyException;
 import com.invocify.invoice.model.BaseResponse;
 import com.invocify.invoice.model.CompanyRequest;
-import com.invocify.invoice.model.CompanySV;
+import com.invocify.invoice.model.CompanyBaseResponse;
 import com.invocify.invoice.service.CompanyService;
 
 import io.swagger.v3.oas.annotations.Operation;
