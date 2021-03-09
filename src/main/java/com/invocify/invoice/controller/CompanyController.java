@@ -7,6 +7,10 @@ import com.invocify.invoice.model.CompanySV;
 import com.invocify.invoice.service.CompanyService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,12 +30,18 @@ public class CompanyController {
 
 	private CompanyService service;
 
+	@Operation(summary = "Create a Company")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Company is created successfully",
+					content = { @Content(mediaType = "application/json",
+							schema = @Schema(implementation = Company.class)) })})
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Company createCompany(@Valid @RequestBody Company company) {
 		return service.createCompany(company);
 	}
 
+	@Operation(summary = "Get all companies")
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<? extends CompanySV> getAllCompanies(
@@ -40,6 +50,15 @@ public class CompanyController {
 		return service.getAllCompanies(includeDetail, includeInactive);
 	}
 
+	@Operation(description = "Ability to update company status to inactive. CompanyId is required*" ,
+			summary = "Update the status to inactive for given companyId ")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Updated the status of Company to inactive",
+					content = { @Content(mediaType = "application/json") }),
+			@ApiResponse(responseCode = "400", description = "Invalid companyId supplied",
+					content = @Content),
+			@ApiResponse(responseCode = "404", description = "Company not found",
+					content = @Content) })
 	@PatchMapping("/{companyId}/status")
 	public Company archiveCompany(@PathVariable UUID companyId) throws InvalidCompanyException {
 		return service.archiveCompany(companyId);
