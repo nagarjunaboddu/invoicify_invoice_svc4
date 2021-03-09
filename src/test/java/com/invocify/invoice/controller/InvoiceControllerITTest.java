@@ -40,9 +40,6 @@ class InvoiceControllerITTest {
 	@Autowired
 	private CompanyRepository companyRepository;
 
-	@Autowired
-	private InvoiceRepository invoiceRepository;
-
 	@Test
 	public void createInvoicewithoutLineItem() throws Exception {
 
@@ -90,8 +87,10 @@ class InvoiceControllerITTest {
 
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isCreated())
-				.andExpect(jsonPath("$.data.id").exists()).andExpect(jsonPath("$.data.author").value(requestInvoice.getAuthor()))
-				.andExpect(jsonPath("$.data.lastModifiedDate").exists()).andExpect(jsonPath("$.data.totalCost").value(56.5))
+				.andExpect(jsonPath("$.data.id").exists())
+				.andExpect(jsonPath("$.data.author").value(requestInvoice.getAuthor()))
+				.andExpect(jsonPath("$.data.lastModifiedDate").exists())
+				.andExpect(jsonPath("$.data.totalCost").value(56.5))
 				.andExpect(jsonPath("$.data.company.id").value(company.getId().toString()))
 				.andExpect(jsonPath("$.data.company.name").value(company.getName()))
 				.andExpect(jsonPath("$.data.company.street").value(company.getStreet()))
