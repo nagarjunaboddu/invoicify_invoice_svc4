@@ -50,8 +50,11 @@ public class InvoiceService extends InvocifyServiceHelper {
 		return new Invoice(invoiceRequest.getAuthor(), invoiceRequest.getLineItems(), company);
 	}
 
-	public Invoice addLineItemsToInvoice(UUID invoiceId, List<LineItem> lineItems) throws InvoiceNotFoundException {
+	public Invoice addLineItemsToInvoice(UUID invoiceId, List<LineItem> lineItems) throws InvoiceNotFoundException, InvoiceAlreadyPaidException {
 		Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new InvoiceNotFoundException(invoiceId));
+		if(invoice.isPaidStatus()) {
+			throw new InvoiceAlreadyPaidException(invoiceId);
+		}
 		invoice.getLineItems().addAll(lineItems);
 		return invoiceRepository.save(invoice);
 	}

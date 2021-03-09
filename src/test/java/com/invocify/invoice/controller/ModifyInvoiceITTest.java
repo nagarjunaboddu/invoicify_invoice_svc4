@@ -62,7 +62,7 @@ public class ModifyInvoiceITTest {
     }
 
     @Test
-    public void addLineItemsToExistingInvoice() throws Exception {
+    public void addLineItemsToExistingUnpaidInvoice() throws Exception {
         Company company = companyRepository.save(HelperClass.requestCompany());
         Invoice invoice = HelperClass.expectedInvoice(company);
         InvoiceRequest requestInvoice = HelperClass.requestInvoice(invoice);
@@ -111,6 +111,25 @@ public class ModifyInvoiceITTest {
                 .andExpect(jsonPath("$.lineItems[3].rateType").value("rate"))
                 .andExpect(jsonPath("$.lineItems[3].rate").value(5.7))
                 .andExpect(jsonPath("$.lineItems[3].totalFees").value(17.1));
+    }
+
+    @Test
+    public void addLineItemsToExistingPaidInvoice() throws Exception {
+
+        Invoice invoice = getPaidInvoiceWithTwoLineItemsAndCompany();
+        LineItem lineItem3 = LineItem.builder().description("flat line item3").quantity(1).rate(new BigDecimal(5.5))
+                .rateType("flat").build();
+        LineItem lineItem4 = LineItem.builder().description("rate based line item4").quantity(3).rate(new BigDecimal(5.7))
+                .rateType("rate").build();
+        List<LineItem> patchLineItems = new ArrayList<>();
+        patchLineItems.add(lineItem3);
+        patchLineItems.add(lineItem4);
+        mockMvc.perform(patch("/api/v1/invocify/invoices/{invoiceId}/lineItems",invoice.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(patchLineItems)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.[0]").value(String.format("Paid Invoice cannot be updated: %s", invoice.getId().toString())));
+
     }
 
 
