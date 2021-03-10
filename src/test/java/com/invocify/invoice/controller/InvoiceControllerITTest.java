@@ -40,9 +40,6 @@ class InvoiceControllerITTest {
 	@Autowired
 	private CompanyRepository companyRepository;
 
-	@Autowired
-	private InvoiceRepository invoiceRepository;
-
 	@Test
 	public void createInvoicewithoutLineItem() throws Exception {
 
@@ -52,8 +49,8 @@ class InvoiceControllerITTest {
 
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$.[0]").value("Atleast one line item should be present"));
+				.andExpect(jsonPath("$.errors.length()").value(1))
+				.andExpect(jsonPath("$.errors.[0]").value("Atleast one line item should be present"));
 
 	}
 
@@ -66,8 +63,8 @@ class InvoiceControllerITTest {
 		requestInvoice.setLineItems(new ArrayList<>());
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$.[0]").value("Atleast one line item should be present"));
+				.andExpect(jsonPath("$.errors.length()").value(1))
+				.andExpect(jsonPath("$.errors.[0]").value("Atleast one line item should be present"));
 
 	}
 
@@ -90,44 +87,47 @@ class InvoiceControllerITTest {
 
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.author").value(requestInvoice.getAuthor()))
-				.andExpect(jsonPath("$.createdDate").exists()).andExpect(jsonPath("$.totalCost").value(56.5))
-				.andExpect(jsonPath("$.company.id").value(company.getId().toString()))
-				.andExpect(jsonPath("$.company.name").value(company.getName()))
-				.andExpect(jsonPath("$.company.street").value(company.getStreet()))
-				.andExpect(jsonPath("$.company.city").value(company.getCity()))
-				.andExpect(jsonPath("$.company.state").value(company.getState()))
-				.andExpect(jsonPath("$.company.postalCode").value(company.getPostalCode()))
-				.andExpect(jsonPath("$.lineItems.length()").value(2))
-				.andExpect(jsonPath("$.lineItems[0].id").exists())
-				.andExpect(jsonPath("$.lineItems[0].description").value("Service line item"))
-				.andExpect(jsonPath("$.lineItems[0].quantity").value(1))
-				.andExpect(jsonPath("$.lineItems[0].rateType").value("flat"))
-				.andExpect(jsonPath("$.lineItems[0].rate").value(15.3))
-				.andExpect(jsonPath("$.lineItems[0].totalFees").value(15.3))
-				.andExpect(jsonPath("$.lineItems[1].id").exists())
-				.andExpect(jsonPath("$.lineItems[1].description").value("line item"))
-				.andExpect(jsonPath("$.lineItems[1].quantity").value(4))
-				.andExpect(jsonPath("$.lineItems[1].rateType").value("rate"))
-				.andExpect(jsonPath("$.lineItems[1].rate").value(10.3))
-				.andExpect(jsonPath("$.lineItems[1].totalFees").value(41.2));
+				.andExpect(jsonPath("$.data.id").exists())
+				.andExpect(jsonPath("$.data.author").value(requestInvoice.getAuthor()))
+				.andExpect(jsonPath("$.data.lastModifiedDate").exists())
+				.andExpect(jsonPath("$.data.totalCost").value(56.5))
+				.andExpect(jsonPath("$.data.company.id").value(company.getId().toString()))
+				.andExpect(jsonPath("$.data.company.name").value(company.getName()))
+				.andExpect(jsonPath("$.data.company.street").value(company.getStreet()))
+				.andExpect(jsonPath("$.data.company.city").value(company.getCity()))
+				.andExpect(jsonPath("$.data.company.state").value(company.getState()))
+				.andExpect(jsonPath("$.data.company.postalCode").value(company.getPostalCode()))
+				.andExpect(jsonPath("$.data.lineItems.length()").value(2))
+				.andExpect(jsonPath("$.data.lineItems[0].id").exists())
+				.andExpect(jsonPath("$.data.lineItems[0].description").value("Service line item"))
+				.andExpect(jsonPath("$.data.lineItems[0].quantity").value(1))
+				.andExpect(jsonPath("$.data.lineItems[0].rateType").value("flat"))
+				.andExpect(jsonPath("$.data.lineItems[0].rate").value(15.3))
+				.andExpect(jsonPath("$.data.lineItems[0].totalFees").value(15.3))
+				.andExpect(jsonPath("$.data.lineItems[1].id").exists())
+				.andExpect(jsonPath("$.data.lineItems[1].description").value("line item"))
+				.andExpect(jsonPath("$.data.lineItems[1].quantity").value(4))
+				.andExpect(jsonPath("$.data.lineItems[1].rateType").value("rate"))
+				.andExpect(jsonPath("$.data.lineItems[1].rate").value(10.3))
+				.andExpect(jsonPath("$.data.lineItems[1].totalFees").value(41.2));
 
 	}
 
 	@Test
-	public void createInvoiceWithoutCompany() throws Exception {
+	public void createInvoiceWithoutCompanyAndAuthor() throws Exception {
 
 		LineItem lineItem = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
 				.rateType("rate").build();
-		InvoiceRequest requestInvoice = InvoiceRequest.builder().author("author").lineItems(new ArrayList<LineItem>() {
+		InvoiceRequest requestInvoice = InvoiceRequest.builder().lineItems(new ArrayList<LineItem>() {
 			{
 				add(lineItem);
 			}
 		}).build();
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$.[0]").value("Invoice should be associated with an existing company"));
+				.andExpect(jsonPath("$.errors.length()").value(2))
+				.andExpect(jsonPath("$.errors[0]").value("Author should be present"))
+				.andExpect(jsonPath("$.errors[1]").value("Invoice should be associated with an existing company"));
 	}
 
 	@Test
@@ -143,18 +143,18 @@ class InvoiceControllerITTest {
 				}).build();
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$.[0]").value(String.format("Given company not found: %s", id.toString())));
+				.andExpect(jsonPath("$.errors.length()").value(1))
+				.andExpect(jsonPath("$.errors[0]").value(String.format("Given company not found: %s", id.toString())));
 	}
 	@Test
 	public void getListOfInvoices() throws Exception{
 		createInvoice(1);
 		mockMvc.perform(get("/api/v1/invocify/invoices"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.invoices.length()").value(1))
-				.andExpect(jsonPath("$.invoices[0].paidStatus").value(false))
-				.andExpect(jsonPath("$.invoices[0].createdDate").exists())
-				.andExpect(jsonPath("$.invoices[0].totalCost").value(56.5));
+				.andExpect(jsonPath("$.data.invoices.length()").value(1))
+				.andExpect(jsonPath("$.data.invoices[0].paidStatus").value(false))
+				.andExpect(jsonPath("$.data.invoices[0].lastModifiedDate").exists())
+				.andExpect(jsonPath("$.data.invoices[0].totalCost").value(56.5));
 	}
 
 	@Test
@@ -166,12 +166,12 @@ class InvoiceControllerITTest {
 
 		mockMvc.perform(get("/api/v1/invocify/invoices"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.invoices.length()").value(10))
-				.andExpect(jsonPath("$.totalPages").value(2))
-				.andExpect(jsonPath("$.totalElements").value(15))
+				.andExpect(jsonPath("$.data.invoices.length()").value(10))
+				.andExpect(jsonPath("$.data.totalPages").value(2))
+				.andExpect(jsonPath("$.data.totalElements").value(15))
 				//validate that first element is last added element and last element is oldest added element
-				.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 14"))
-				.andExpect(jsonPath("$.invoices[9].lineItems[0].description").value("Service line item 5"));
+				.andExpect(jsonPath("$.data.invoices[0].lineItems[0].description").value("Service line item 14"))
+				.andExpect(jsonPath("$.data.invoices[9].lineItems[0].description").value("Service line item 5"));
 	}
 
 	@Test
@@ -184,12 +184,12 @@ class InvoiceControllerITTest {
 		mockMvc.perform(get("/api/v1/invocify/invoices").param("page", "1"))
 				.andExpect(status().isOk())
 				//for second page expect only 5 values
-				.andExpect(jsonPath("$.invoices.length()").value(5))
-				.andExpect(jsonPath("$.totalPages").value(2))
-				.andExpect(jsonPath("$.totalElements").value(15))
+				.andExpect(jsonPath("$.data.invoices.length()").value(5))
+				.andExpect(jsonPath("$.data.totalPages").value(2))
+				.andExpect(jsonPath("$.data.totalElements").value(15))
 				//validate that first element is last added element and last element is oldest added element
-				.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 4"))
-				.andExpect(jsonPath("$.invoices[4].lineItems[0].description").value("Service line item 0"));
+				.andExpect(jsonPath("$.data.invoices[0].lineItems[0].description").value("Service line item 4"))
+				.andExpect(jsonPath("$.data.invoices[4].lineItems[0].description").value("Service line item 0"));
 	}
 
 
@@ -204,10 +204,10 @@ class InvoiceControllerITTest {
 		mockMvc.perform(get("/api/v1/invocify/invoices").param("filterDuration", "2").param("filterUnit", "SECONDS"))
 				.andExpect(status().isOk())
 				//expect only 2 values
-				.andExpect(jsonPath("$.invoices.length()").value(not(3)))
-				.andExpect(jsonPath("$.invoices.length()").value(not(0)))
+				.andExpect(jsonPath("$.data.invoices.length()").value(not(3)))
+				.andExpect(jsonPath("$.data.invoices.length()").value(not(0)))
 				//validate that first element is last added element and last element is oldest added element
-				.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 2"));
+				.andExpect(jsonPath("$.data.invoices[0].lineItems[0].description").value("Service line item 2"));
 	}
 
 	@Test
@@ -222,11 +222,11 @@ class InvoiceControllerITTest {
 		mockMvc.perform(get("/api/v1/invocify/invoices").param("filterDuration", "12").param("filterUnit", "SECONDS"))
 				.andExpect(status().isOk())
 				//expect only 10 values
-				.andExpect(jsonPath("$.invoices.length()").value(not(15)))
-				.andExpect(jsonPath("$.invoices.length()").value(not(0)))
-				.andExpect(jsonPath("$.invoices.length()").value(10))
+				.andExpect(jsonPath("$.data.invoices.length()").value(not(15)))
+				.andExpect(jsonPath("$.data.invoices.length()").value(not(0)))
+				.andExpect(jsonPath("$.data.invoices.length()").value(10))
 				//validate that first element is last added element
-				.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 14"));
+				.andExpect(jsonPath("$.data.invoices[0].lineItems[0].description").value("Service line item 14"));
 	}
 
 	/**
@@ -266,12 +266,12 @@ class InvoiceControllerITTest {
 				.param("filterUnit", "SECONDS")
 				.param("disableFilter","true"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.invoices.length()").value(10))
-				.andExpect(jsonPath("$.totalPages").value(2))
-				.andExpect(jsonPath("$.totalElements").value(20))
+				.andExpect(jsonPath("$.data.invoices.length()").value(10))
+				.andExpect(jsonPath("$.data.totalPages").value(2))
+				.andExpect(jsonPath("$.data.totalElements").value(20))
 				//validate that first element is last added element and last element is oldest added element
-				.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 19"))
-				.andExpect(jsonPath("$.invoices[9].lineItems[0].description").value("Service line item 10"));
+				.andExpect(jsonPath("$.data.invoices[0].lineItems[0].description").value("Service line item 19"))
+				.andExpect(jsonPath("$.data.invoices[9].lineItems[0].description").value("Service line item 10"));
 
 		mockMvc.perform(get("/api/v1/invocify/invoices")
 				.param("page","1")
@@ -279,12 +279,12 @@ class InvoiceControllerITTest {
 				.param("filterUnit", "SECONDS")
 				.param("disableFilter","true"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.invoices.length()").value(10))
-				.andExpect(jsonPath("$.totalPages").value(2))
-				.andExpect(jsonPath("$.totalElements").value(20))
+				.andExpect(jsonPath("$.data.invoices.length()").value(10))
+				.andExpect(jsonPath("$.data.totalPages").value(2))
+				.andExpect(jsonPath("$.data.totalElements").value(20))
 				//validate that first element is last added element and last element is oldest added element
-				.andExpect(jsonPath("$.invoices[0].lineItems[0].description").value("Service line item 9"))
-				.andExpect(jsonPath("$.invoices[9].lineItems[0].description").value("Service line item 0"));
+				.andExpect(jsonPath("$.data.invoices[0].lineItems[0].description").value("Service line item 9"))
+				.andExpect(jsonPath("$.data.invoices[9].lineItems[0].description").value("Service line item 0"));
   }
   
 

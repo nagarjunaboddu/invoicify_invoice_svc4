@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.invocify.invoice.entity.Invoice;
 import com.invocify.invoice.entity.LineItem;
 import com.invocify.invoice.exception.InvalidCompanyException;
+import com.invocify.invoice.model.BaseResponse;
 import com.invocify.invoice.model.InvoiceListResponse;
 import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.service.InvoiceService;
@@ -48,13 +49,13 @@ public class InvoiceController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Invoice createInvoice(@Valid @RequestBody InvoiceRequest invoiceRequest) throws InvalidCompanyException {
-		return invoiceService.createInvoice(invoiceRequest);
+	public BaseResponse createInvoice(@Valid @RequestBody InvoiceRequest invoiceRequest) throws InvalidCompanyException {
+		return new BaseResponse(invoiceService.createInvoice(invoiceRequest));
 	}
 
 	@Operation(description = "get list of invoices created in last year, sorted by date and ten invoices per page")
 	@GetMapping
-	public InvoiceListResponse getInvoices(
+	public BaseResponse getInvoices(
 			@PositiveOrZero @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
 			@RequestParam(required = false) boolean disableFilter,
 			@Parameter(hidden = false) @Positive @RequestParam(required = false, defaultValue = DEFAULT_FILTERDURATION) Long filterDuration,
@@ -63,18 +64,19 @@ public class InvoiceController {
 	}
 
 	@PutMapping("/{invoiceId}")
-	public Invoice updateInvoice(@PathVariable UUID invoiceId , @Valid @RequestBody InvoiceUpdateRequest invoiceUpdateRequest) throws InvoiceNotFoundException, InvoiceAlreadyPaidException, InvalidCompanyException {
-		return invoiceService.updateInvoice(invoiceId,invoiceUpdateRequest);
+	public  BaseResponse updateInvoice(@PathVariable UUID invoiceId , @Valid @RequestBody InvoiceUpdateRequest invoiceUpdateRequest) throws InvoiceNotFoundException, InvoiceAlreadyPaidException, InvalidCompanyException {
+		return  new BaseResponse(invoiceService.updateInvoice(invoiceId,invoiceUpdateRequest));
 	}
 
-	private InvoiceListResponse invoiceResponse(Page<Invoice> pages) {
-		return new InvoiceListResponse(pages.toList(), pages.getTotalPages(), pages.getTotalElements());
+	private BaseResponse invoiceResponse(Page<Invoice> pages) {
+		return  new BaseResponse(new InvoiceListResponse(pages.toList(), pages.getTotalPages(), pages.getTotalElements()));
 	}
 
 
     @PatchMapping("/{invoiceId}/lineItems")
     @ResponseStatus(HttpStatus.OK)
-    public Invoice addLineItemsToExistingInvoice(@PathVariable UUID invoiceId , @RequestBody List<LineItem> lineItems) throws InvoiceNotFoundException, InvoiceAlreadyPaidException {
-        return invoiceService.addLineItemsToInvoice(invoiceId, lineItems);
+    public  BaseResponse addLineItemsToExistingInvoice(@PathVariable UUID invoiceId , @RequestBody List<LineItem> lineItems) throws InvoiceNotFoundException, InvoiceAlreadyPaidException {
+        return  new BaseResponse(invoiceService.addLineItemsToInvoice(invoiceId, lineItems));
+
     }
 }

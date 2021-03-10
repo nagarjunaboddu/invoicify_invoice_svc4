@@ -36,8 +36,6 @@ public class CreateInvoiceITTest {
     @Autowired
     private CompanyRepository companyRepository;
 
-    @Autowired
-    private InvoiceRepository invoiceRepository;
 
     @Test
     public void createInvoicewithLineItems_ValidateLineItems()  throws Exception {
@@ -61,11 +59,11 @@ public class CreateInvoiceITTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(requestInvoice)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.length()").value(4))
-                .andExpect(jsonPath("$[0]").value("Quantity should be greater than Zero"))
-                .andExpect(jsonPath("$[1]").value("Quantity should be greater than Zero"))
-                .andExpect(jsonPath("$[2]").value("RateType should be flat or rate"))
-                .andExpect(jsonPath("$[3]").value("RateType should be flat or rate"))
+                .andExpect(jsonPath("$.errors.length()").value(4))
+                .andExpect(jsonPath("$.errors[0]").value("Quantity should be greater than Zero"))
+                .andExpect(jsonPath("$.errors[1]").value("Quantity should be greater than Zero"))
+                .andExpect(jsonPath("$.errors[2]").value("RateType should be flat or rate"))
+                .andExpect(jsonPath("$.errors[3]").value("RateType should be flat or rate"))
         ;
 
 

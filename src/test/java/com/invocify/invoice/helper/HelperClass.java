@@ -20,7 +20,7 @@ public class HelperClass {
 	public static Invoice expectedInvoice(Company expectedCompany) {
 		return Invoice.builder().author("tech guy")
 				.company(expectedCompany)
-				.createdDate(new Date())
+				.lastModifiedDate(new Date())
 				.id(UUID.randomUUID())
 				.lineItems(new ArrayList<>())
 				.build();
@@ -40,7 +40,7 @@ public class HelperClass {
         };
         return Invoice.builder().author("tech guy")
                 .company(expectedCompany)
-                .createdDate(new Date())
+                .lastModifiedDate(new Date())
                 .id(UUID.randomUUID())
                 .lineItems(lineItemList)
                 .paidStatus(true)
@@ -61,7 +61,7 @@ public class HelperClass {
         };
         return Invoice.builder().author("tech guy")
                 .company(expectedCompany)
-                .createdDate(new Date())
+                .lastModifiedDate(new Date())
                 .id(UUID.randomUUID())
                 .lineItems(lineItemList)
                 .paidStatus(false)

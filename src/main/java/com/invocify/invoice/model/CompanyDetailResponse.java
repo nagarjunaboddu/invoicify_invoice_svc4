@@ -9,7 +9,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name","street", "city", "state", "postalCode","active" })
-public class CompanyDetail extends CompanySV {
+public class CompanyDetailResponse extends CompanyBaseResponse {
 
     private UUID id;
     private String street;

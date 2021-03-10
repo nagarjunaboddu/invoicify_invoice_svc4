@@ -44,12 +44,12 @@ public class CompanyControllerITTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("Amazon"))
-                .andExpect(jsonPath("$.street").value("233 Siliconvalley"))
-                .andExpect(jsonPath("$.city").value("LA"))
-                .andExpect(jsonPath("$.state").value("California"))
-                .andExpect(jsonPath("$.postalCode").value("75035"));
+                .andExpect(jsonPath("$.data.id").exists())
+                .andExpect(jsonPath("$.data.name").value("Amazon"))
+                .andExpect(jsonPath("$.data.street").value("233 Siliconvalley"))
+                .andExpect(jsonPath("$.data.city").value("LA"))
+                .andExpect(jsonPath("$.data.state").value("California"))
+                .andExpect(jsonPath("$.data.postalCode").value("75035"));
 
     }
 
@@ -63,8 +63,8 @@ public class CompanyControllerITTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0]").value("Name cannot be empty"));
+                .andExpect(jsonPath("$.errors.length()").value(1))
+                .andExpect(jsonPath("$.errors[0]").value("Name cannot be empty"));
 
     }
 
@@ -75,11 +75,11 @@ public class CompanyControllerITTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.length()").value(4))
-                .andExpect(jsonPath("$[0]").value("City cannot be empty"))
-                .andExpect(jsonPath("$[1]").value("PostalCode cannot be empty"))
-                .andExpect(jsonPath("$[2]").value("State cannot be empty"))
-                .andExpect(jsonPath("$[3]").value("Street cannot be empty"))
+                .andExpect(jsonPath("$.errors.length()").value(4))
+                .andExpect(jsonPath("$.errors[0]").value("City cannot be empty"))
+                .andExpect(jsonPath("$.errors[1]").value("PostalCode cannot be empty"))
+                .andExpect(jsonPath("$.errors[2]").value("State cannot be empty"))
+                .andExpect(jsonPath("$.errors[3]").value("Street cannot be empty"))
         ;
 
     }
@@ -91,12 +91,12 @@ public class CompanyControllerITTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.length()").value(5))
-                .andExpect(jsonPath("$[0]").value("City cannot be empty"))
-                .andExpect(jsonPath("$[1]").value("Name cannot be empty"))
-                .andExpect(jsonPath("$[2]").value("PostalCode cannot be empty"))
-                .andExpect(jsonPath("$[3]").value("State cannot be empty"))
-                .andExpect(jsonPath("$[4]").value("Street cannot be empty"));
+                .andExpect(jsonPath("$.errors.length()").value(5))
+                .andExpect(jsonPath("$.errors[0]").value("City cannot be empty"))
+                .andExpect(jsonPath("$.errors[1]").value("Name cannot be empty"))
+                .andExpect(jsonPath("$.errors[2]").value("PostalCode cannot be empty"))
+                .andExpect(jsonPath("$.errors[3]").value("State cannot be empty"))
+                .andExpect(jsonPath("$.errors[4]").value("Street cannot be empty"));
 
     }
 
@@ -126,19 +126,19 @@ public class CompanyControllerITTest {
 
         mockMvc.perform(get("/api/v1/invocify/companies"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Amazon"))
-                .andExpect(jsonPath("$[0].street").doesNotExist())
-                .andExpect(jsonPath("$[0].city").value("LA"))
-                .andExpect(jsonPath("$[0].state").value("California"))
-                .andExpect(jsonPath("$[0].postalCode").doesNotExist())
-                .andExpect(jsonPath("$[0].active").doesNotExist())
-                .andExpect(jsonPath("$[1].name").value("Apple"))
-                .andExpect(jsonPath("$[1].street").doesNotExist())
-                .andExpect(jsonPath("$[1].city").value("New York"))
-                .andExpect(jsonPath("$[1].state").value("New York"))
-                .andExpect(jsonPath("$[1].postalCode").doesNotExist())
-                .andExpect(jsonPath("$[1].active").doesNotExist());
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].name").value("Amazon"))
+                .andExpect(jsonPath("$.data[0].street").doesNotExist())
+                .andExpect(jsonPath("$.data[0].city").value("LA"))
+                .andExpect(jsonPath("$.data[0].state").value("California"))
+                .andExpect(jsonPath("$.data[0].postalCode").doesNotExist())
+                .andExpect(jsonPath("$.data[0].active").doesNotExist())
+                .andExpect(jsonPath("$.data[1].name").value("Apple"))
+                .andExpect(jsonPath("$.data[1].street").doesNotExist())
+                .andExpect(jsonPath("$.data[1].city").value("New York"))
+                .andExpect(jsonPath("$.data[1].state").value("New York"))
+                .andExpect(jsonPath("$.data[1].postalCode").doesNotExist())
+                .andExpect(jsonPath("$.data[1].active").doesNotExist());
 
     }
 
@@ -168,21 +168,21 @@ public class CompanyControllerITTest {
 
         mockMvc.perform(get("/api/v1/invocify/companies").param("includeDetail", "false"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].name").value("Amazon"))
-                .andExpect(jsonPath("$[0].street").doesNotExist())
-                .andExpect(jsonPath("$[0].city").value("LA"))
-                .andExpect(jsonPath("$[0].state").value("California"))
-                .andExpect(jsonPath("$[0].postalCode").doesNotExist())
-                .andExpect(jsonPath("$[0].active").doesNotExist())
-                .andExpect(jsonPath("$[1].id").exists())
-                .andExpect(jsonPath("$[1].name").value("Apple"))
-                .andExpect(jsonPath("$[1].street").doesNotExist())
-                .andExpect(jsonPath("$[1].city").value("New York"))
-                .andExpect(jsonPath("$[1].state").value("New York"))
-                .andExpect(jsonPath("$[1].postalCode").doesNotExist())
-                .andExpect(jsonPath("$[1].active").doesNotExist());
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].id").exists())
+                .andExpect(jsonPath("$.data[0].name").value("Amazon"))
+                .andExpect(jsonPath("$.data[0].street").doesNotExist())
+                .andExpect(jsonPath("$.data[0].city").value("LA"))
+                .andExpect(jsonPath("$.data[0].state").value("California"))
+                .andExpect(jsonPath("$.data[0].postalCode").doesNotExist())
+                .andExpect(jsonPath("$.data[0].active").doesNotExist())
+                .andExpect(jsonPath("$.data[1].id").exists())
+                .andExpect(jsonPath("$.data[1].name").value("Apple"))
+                .andExpect(jsonPath("$.data[1].street").doesNotExist())
+                .andExpect(jsonPath("$.data[1].city").value("New York"))
+                .andExpect(jsonPath("$.data[1].state").value("New York"))
+                .andExpect(jsonPath("$.data[1].postalCode").doesNotExist())
+                .andExpect(jsonPath("$.data[1].active").doesNotExist());
 
     }
 
@@ -210,21 +210,21 @@ public class CompanyControllerITTest {
 
         mockMvc.perform(get("/api/v1/invocify/companies").param("includeDetail", "true"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].name").value("Amazon"))
-                .andExpect(jsonPath("$[0].street").value("233 Siliconvalley"))
-                .andExpect(jsonPath("$[0].city").value("LA"))
-                .andExpect(jsonPath("$[0].state").value("California"))
-                .andExpect(jsonPath("$[0].postalCode").value("75035"))
-                .andExpect(jsonPath("$[0].active").value(true))
-                .andExpect(jsonPath("$[1].id").exists())
-                .andExpect(jsonPath("$[1].name").value("Apple"))
-                .andExpect(jsonPath("$[1].street").value("430 CreditValley"))
-                .andExpect(jsonPath("$[1].city").value("New York"))
-                .andExpect(jsonPath("$[1].state").value("New York"))
-                .andExpect(jsonPath("$[1].postalCode").value("75036"))
-                .andExpect(jsonPath("$[1].active").value(true));
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].id").exists())
+                .andExpect(jsonPath("$.data[0].name").value("Amazon"))
+                .andExpect(jsonPath("$.data[0].street").value("233 Siliconvalley"))
+                .andExpect(jsonPath("$.data[0].city").value("LA"))
+                .andExpect(jsonPath("$.data[0].state").value("California"))
+                .andExpect(jsonPath("$.data[0].postalCode").value("75035"))
+                .andExpect(jsonPath("$.data[0].active").value(true))
+                .andExpect(jsonPath("$.data[1].id").exists())
+                .andExpect(jsonPath("$.data[1].name").value("Apple"))
+                .andExpect(jsonPath("$.data[1].street").value("430 CreditValley"))
+                .andExpect(jsonPath("$.data[1].city").value("New York"))
+                .andExpect(jsonPath("$.data[1].state").value("New York"))
+                .andExpect(jsonPath("$.data[1].postalCode").value("75036"))
+                .andExpect(jsonPath("$.data[1].active").value(true));
 
     }
     
@@ -240,13 +240,13 @@ public class CompanyControllerITTest {
         mockMvc
                 .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.active").value(false))
-                .andExpect(jsonPath("$.name").value("Amazon"))
-                .andExpect(jsonPath("$.city").value("LA"))
-                .andExpect(jsonPath("$.state").value("California"))
-                .andExpect(jsonPath("$.street").value("233 Siliconvalley"))
-                .andExpect(jsonPath("$.postalCode").value("75035"));
+                .andExpect(jsonPath("$.data.id").exists())
+                .andExpect(jsonPath("$.data.active").value(false))
+                .andExpect(jsonPath("$.data.name").value("Amazon"))
+                .andExpect(jsonPath("$.data.city").value("LA"))
+                .andExpect(jsonPath("$.data.state").value("California"))
+                .andExpect(jsonPath("$.data.street").value("233 Siliconvalley"))
+                .andExpect(jsonPath("$.data.postalCode").value("75035"));
 
 
     }
@@ -257,8 +257,8 @@ public class CompanyControllerITTest {
 
         mockMvc.perform(patch("/api/v1/invocify/companies/{companyId}/status", id))
                 .andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$[0]").value(String.format("Given company not found: %s",id.toString())));
+				.andExpect(jsonPath("$.errors.length()").value(1))
+				.andExpect(jsonPath("$.errors[0]").value(String.format("Given company not found: %s",id.toString())));
 
     }
     
@@ -279,19 +279,19 @@ public class CompanyControllerITTest {
         mockMvc
                 .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false));
+                .andExpect(jsonPath("$.data.active").value(false));
 
 
         mockMvc
                 .perform(get("/api/v1/invocify/companies").param("includeDetail","false").param("includeInactive", "false"))
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].name").value("Amazon"))
-                .andExpect(jsonPath("$[0].street").doesNotExist())
-                .andExpect(jsonPath("$[0].city").value("LA"))
-                .andExpect(jsonPath("$[0].state").value("California"))
-                .andExpect(jsonPath("$[0].postalCode").doesNotExist())
-                .andExpect(jsonPath("$[0].active").doesNotExist());
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].id").exists())
+                .andExpect(jsonPath("$.data[0].name").value("Amazon"))
+                .andExpect(jsonPath("$.data[0].street").doesNotExist())
+                .andExpect(jsonPath("$.data[0].city").value("LA"))
+                .andExpect(jsonPath("$.data[0].state").value("California"))
+                .andExpect(jsonPath("$.data[0].postalCode").doesNotExist())
+                .andExpect(jsonPath("$.data[0].active").doesNotExist());
 
     }
 
@@ -313,19 +313,19 @@ public class CompanyControllerITTest {
         mockMvc
                 .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false));
+                .andExpect(jsonPath("$.data.active").value(false));
 
 
         mockMvc
                 .perform(get("/api/v1/invocify/companies").param("includeDetail","true").param("includeInactive", "false"))
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].name").value("Amazon"))
-                .andExpect(jsonPath("$[0].street").value("233 Siliconvalley"))
-                .andExpect(jsonPath("$[0].city").value("LA"))
-                .andExpect(jsonPath("$[0].state").value("California"))
-                .andExpect(jsonPath("$[0].postalCode").value("75035"))
-                .andExpect(jsonPath("$[0].active").value(true));
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].id").exists())
+                .andExpect(jsonPath("$.data[0].name").value("Amazon"))
+                .andExpect(jsonPath("$.data[0].street").value("233 Siliconvalley"))
+                .andExpect(jsonPath("$.data[0].city").value("LA"))
+                .andExpect(jsonPath("$.data[0].state").value("California"))
+                .andExpect(jsonPath("$.data[0].postalCode").value("75035"))
+                .andExpect(jsonPath("$.data[0].active").value(true));
 
     }
 
@@ -347,26 +347,26 @@ public class CompanyControllerITTest {
         mockMvc
                 .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false));
+                .andExpect(jsonPath("$.data.active").value(false));
 
 
         mockMvc
                 .perform(get("/api/v1/invocify/companies").param("includeDetail","true").param("includeInactive", "true"))
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].name").value("Amazon"))
-                .andExpect(jsonPath("$[0].street").value("233 Siliconvalley"))
-                .andExpect(jsonPath("$[0].city").value("LA"))
-                .andExpect(jsonPath("$[0].state").value("California"))
-                .andExpect(jsonPath("$[0].postalCode").value("75035"))
-                .andExpect(jsonPath("$[0].active").value(true))
-                .andExpect(jsonPath("$[1].id").exists())
-                .andExpect(jsonPath("$[1].name").value("Apple"))
-                .andExpect(jsonPath("$[1].street").value("430 CreditValley"))
-                .andExpect(jsonPath("$[1].city").value("New York"))
-                .andExpect(jsonPath("$[1].state").value("New York"))
-                .andExpect(jsonPath("$[1].postalCode").value("75036"))
-                .andExpect(jsonPath("$[1].active").value(false));
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].id").exists())
+                .andExpect(jsonPath("$.data[0].name").value("Amazon"))
+                .andExpect(jsonPath("$.data[0].street").value("233 Siliconvalley"))
+                .andExpect(jsonPath("$.data[0].city").value("LA"))
+                .andExpect(jsonPath("$.data[0].state").value("California"))
+                .andExpect(jsonPath("$.data[0].postalCode").value("75035"))
+                .andExpect(jsonPath("$.data[0].active").value(true))
+                .andExpect(jsonPath("$.data[1].id").exists())
+                .andExpect(jsonPath("$.data[1].name").value("Apple"))
+                .andExpect(jsonPath("$.data[1].street").value("430 CreditValley"))
+                .andExpect(jsonPath("$.data[1].city").value("New York"))
+                .andExpect(jsonPath("$.data[1].state").value("New York"))
+                .andExpect(jsonPath("$.data[1].postalCode").value("75036"))
+                .andExpect(jsonPath("$.data[1].active").value(false));
 
     }
 
@@ -388,26 +388,26 @@ public class CompanyControllerITTest {
         mockMvc
                 .perform(patch("/api/v1/invocify/companies/{companyId}/status", companyEntity1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.active").value(false));
+                .andExpect(jsonPath("$.data.active").value(false));
 
 
         mockMvc
                 .perform(get("/api/v1/invocify/companies").param("includeDetail","false").param("includeInactive", "true"))
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].name").value("Amazon"))
-                .andExpect(jsonPath("$[0].street").doesNotExist())
-                .andExpect(jsonPath("$[0].city").value("LA"))
-                .andExpect(jsonPath("$[0].state").value("California"))
-                .andExpect(jsonPath("$[0].postalCode").doesNotExist())
-                .andExpect(jsonPath("$[0].active").doesNotExist())
-                .andExpect(jsonPath("$[1].id").exists())
-                .andExpect(jsonPath("$[1].name").value("Apple"))
-                .andExpect(jsonPath("$[1].street").doesNotExist())
-                .andExpect(jsonPath("$[1].city").value("New York"))
-                .andExpect(jsonPath("$[1].state").value("New York"))
-                .andExpect(jsonPath("$[1].postalCode").doesNotExist())
-                .andExpect(jsonPath("$[1].active").doesNotExist());
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].id").exists())
+                .andExpect(jsonPath("$.data[0].name").value("Amazon"))
+                .andExpect(jsonPath("$.data[0].street").doesNotExist())
+                .andExpect(jsonPath("$.data[0].city").value("LA"))
+                .andExpect(jsonPath("$.data[0].state").value("California"))
+                .andExpect(jsonPath("$.data[0].postalCode").doesNotExist())
+                .andExpect(jsonPath("$.data[0].active").doesNotExist())
+                .andExpect(jsonPath("$.data[1].id").exists())
+                .andExpect(jsonPath("$.data[1].name").value("Apple"))
+                .andExpect(jsonPath("$.data[1].street").doesNotExist())
+                .andExpect(jsonPath("$.data[1].city").value("New York"))
+                .andExpect(jsonPath("$.data[1].state").value("New York"))
+                .andExpect(jsonPath("$.data[1].postalCode").doesNotExist())
+                .andExpect(jsonPath("$.data[1].active").doesNotExist());
 
     }
 

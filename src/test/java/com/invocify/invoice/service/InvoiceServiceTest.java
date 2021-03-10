@@ -51,7 +51,7 @@ public class InvoiceServiceTest {
         assertEquals(expectedCompany, actualInvoice.getCompany());
         assertEquals(BigDecimal.ZERO.setScale(2), actualInvoice.getTotalCost());
         assertNotNull(actualInvoice.getId());
-        assertNotNull(actualInvoice.getCreatedDate());
+        assertNotNull(actualInvoice.getLastModifiedDate());
 
         //verify mock usage
         verify(companyRepository, times(1)).findById(Mockito.any(UUID.class));

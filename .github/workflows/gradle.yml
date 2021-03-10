@@ -23,11 +23,11 @@ jobs:
     - name: Test and validate Code Coverage with Gradle
       run: ./gradlew test jacocoTestCoverageVerification
     
-#Did not work with jacoco format
-#    - name: Publish Unit Test Results
-#      uses: EnricoMi/publish-unit-test-result-action@v1
-#      if: always()
-#      with:
-#         files: build/reports/jacoco/test/jacocoTestReport.xml
-#         check_name: Unit Test Results
-#         comment_title: Test Report
+#This needs to be location of Junit Results and not jacoco
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+         files: build/test-results/test/*.xml
+         check_name: Unit Test Results
+         comment_title: Test Report

@@ -36,7 +36,7 @@ public class Invoice {
 
 	@Schema(example = "03-05-2021 17:30:29")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdDate;
+	private Date lastModifiedDate;
 
 	public Invoice(String author, List<LineItem> lineItems, Company company) {
 		this.author = author;
@@ -54,7 +54,7 @@ public class Invoice {
 	@PrePersist
 	@PreUpdate
 	private void prePersist() {
-		this.createdDate = new Date();
+		this.lastModifiedDate = new Date();
 	}
 
 	/**

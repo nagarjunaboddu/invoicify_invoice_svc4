@@ -1,4 +1,4 @@
-package com.invocify.invoice.service;
+package com.invocify.invoice.service.helper;
 
 import java.util.UUID;
 

@@ -17,12 +17,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.invocify.invoice.entity.Company;
+import com.invocify.invoice.model.BaseResponse;
 import com.invocify.invoice.model.CompanyRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ModifyCompanyIntTest {
+public class ModifyCompanyITTest {
 	
 	@Autowired
     MockMvc mockMvc;
@@ -47,23 +48,25 @@ public class ModifyCompanyIntTest {
                  .contentType(MediaType.APPLICATION_JSON)
                  .content(mapper.writeValueAsString(company)))
                  .andExpect(status().isCreated())
-                 .andExpect(jsonPath("$.active").value(false))
+                 .andExpect(jsonPath("$.data.active").value(false))
                  .andDo(result -> {
                 	 String response = result.getResponse().getContentAsString();
-                	 setId(mapper.readValue(response, Company.class).getId());
+                	 Object data = mapper.readValue(response, BaseResponse.class).getData();
+                	 setId(mapper.convertValue(data, Company.class).getId());
+                	 
                  });
     	 
     	 mockMvc.perform(put("/api/v1/invocify/companies/{companyId}",id)
     			 .contentType(MediaType.APPLICATION_JSON)
                  .content(mapper.writeValueAsString(modifiedCompany())))
     	 .andExpect(status().isOk())
-    	 .andExpect(jsonPath("$.id").value(id.toString()))
-         .andExpect(jsonPath("$.name").value("Ofe's Company"))
-         .andExpect(jsonPath("$.street").value("999 Fun Street"))
-         .andExpect(jsonPath("$.city").value("Frisco"))
-         .andExpect(jsonPath("$.state").value("TX"))
-         .andExpect(jsonPath("$.postalCode").value("00000"))
-         .andExpect(jsonPath("$.active").value(true));   	
+    	 .andExpect(jsonPath("$.data.id").value(id.toString()))
+         .andExpect(jsonPath("$.data.name").value("Ofe's Company"))
+         .andExpect(jsonPath("$.data.street").value("999 Fun Street"))
+         .andExpect(jsonPath("$.data.city").value("Frisco"))
+         .andExpect(jsonPath("$.data.state").value("TX"))
+         .andExpect(jsonPath("$.data.postalCode").value("00000"))
+         .andExpect(jsonPath("$.data.active").value(true));   	
     }
     
 	@Test
@@ -75,8 +78,8 @@ public class ModifyCompanyIntTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(modifiedCompany())))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$[0]").value(String.format("Given company not found: %s",id.toString())));
+				.andExpect(jsonPath("$.errors.length()").value(1))
+				.andExpect(jsonPath("$.errors[0]").value(String.format("Given company not found: %s",id.toString())));
 	}
     
     private CompanyRequest modifiedCompany() {

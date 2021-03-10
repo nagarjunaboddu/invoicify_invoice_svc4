@@ -2,10 +2,12 @@ package com.invocify.invoice.service;
 
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.exception.InvalidCompanyException;
-import com.invocify.invoice.model.CompanyDetail;
+import com.invocify.invoice.model.CompanyDetailResponse;
 import com.invocify.invoice.model.CompanyRequest;
-import com.invocify.invoice.model.CompanySV;
+import com.invocify.invoice.model.CompanyBaseResponse;
 import com.invocify.invoice.repository.CompanyRepository;
+import com.invocify.invoice.service.helper.InvocifyServiceHelper;
+
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class CompanyService extends InvocifyServiceHelper {
     }
 
 
-    public List<? extends CompanySV> getAllCompanies(boolean includeDetail, boolean includeInactive) {
+    public List<? extends CompanyBaseResponse> getAllCompanies(boolean includeDetail, boolean includeInactive) {
         List<Company> companies;
         if (includeInactive) {
             companies = companyRepository.findAll();
@@ -37,14 +39,14 @@ public class CompanyService extends InvocifyServiceHelper {
 
         if (includeDetail) {
             return companies.stream().map(company -> {
-                CompanyDetail companyDetail = new CompanyDetail();
+                CompanyDetailResponse companyDetail = new CompanyDetailResponse();
                 BeanUtils.copyProperties(company, companyDetail);
                 return companyDetail;
             }).collect(Collectors.toList());
 
         } else {
             return companies.stream().map(company -> {
-                CompanySV companySV = new CompanySV();
+                CompanyBaseResponse companySV = new CompanyBaseResponse();
                 BeanUtils.copyProperties(company, companySV);
                 return companySV;
             }).collect(Collectors.toList());
