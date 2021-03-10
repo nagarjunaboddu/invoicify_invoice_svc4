@@ -114,19 +114,20 @@ class InvoiceControllerITTest {
 	}
 
 	@Test
-	public void createInvoiceWithoutCompany() throws Exception {
+	public void createInvoiceWithoutCompanyAndAuthor() throws Exception {
 
 		LineItem lineItem = LineItem.builder().description("line item").quantity(4).rate(new BigDecimal(10.3))
 				.rateType("rate").build();
-		InvoiceRequest requestInvoice = InvoiceRequest.builder().author("author").lineItems(new ArrayList<LineItem>() {
+		InvoiceRequest requestInvoice = InvoiceRequest.builder().lineItems(new ArrayList<LineItem>() {
 			{
 				add(lineItem);
 			}
 		}).build();
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors.length()").value(1))
-				.andExpect(jsonPath("$.errors.[0]").value("Invoice should be associated with an existing company"));
+				.andExpect(jsonPath("$.errors.length()").value(2))
+				.andExpect(jsonPath("$.errors[0]").value("Author should be present"))
+				.andExpect(jsonPath("$.errors[1]").value("Invoice should be associated with an existing company"));
 	}
 
 	@Test
@@ -143,7 +144,7 @@ class InvoiceControllerITTest {
 		mockMvc.perform(post("/api/v1/invocify/invoices").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(requestInvoice))).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.errors.length()").value(1))
-				.andExpect(jsonPath("$.errors.[0]").value(String.format("Given company not found: %s", id.toString())));
+				.andExpect(jsonPath("$.errors[0]").value(String.format("Given company not found: %s", id.toString())));
 	}
 	@Test
 	public void getListOfInvoices() throws Exception{
