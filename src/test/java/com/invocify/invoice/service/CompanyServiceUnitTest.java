@@ -38,7 +38,7 @@ public class CompanyServiceUnitTest {
    @Test
     public void createCompany() {
        when(companyRepository.save(any(Company.class))).thenReturn((HelperClass.expectedCompany()));
-       Company actual = companyService.createCompany(HelperClass.requestCompany());
+       Company actual = companyService.createCompany(HelperClass.requestCompanyRequest());
 
        assertNotNull(actual.getId());
        assertEquals("Amazon", actual.getName());

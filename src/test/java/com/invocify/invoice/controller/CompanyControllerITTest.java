@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
+import com.invocify.invoice.model.CompanyRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,13 +37,13 @@ public class CompanyControllerITTest {
 
     @Test
     public void createCompanyTest_success() throws Exception {
-        Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
+        CompanyRequest companyRequest = CompanyRequest.builder().name("Amazon").street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
                 .postalCode("75035").build();
         mockMvc.perform(post("/api/v1/invocify/companies")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(company)))
+                .content(mapper.writeValueAsString(companyRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data.id").exists())
                 .andExpect(jsonPath("$.data.name").value("Amazon"))
@@ -55,7 +56,7 @@ public class CompanyControllerITTest {
 
     @Test
     public void createCompanyTest_unSuccessful_NoName() throws Exception {
-        Company company = Company.builder().street("233 Siliconvalley")
+        CompanyRequest company = CompanyRequest.builder().street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
                 .postalCode("75035").build();
@@ -70,7 +71,7 @@ public class CompanyControllerITTest {
 
     @Test
     public void createCompanyTest_unSuccessful_NoAddress() throws Exception {
-        Company company = Company.builder().name("Amazon").build();
+        CompanyRequest company = CompanyRequest.builder().name("Amazon").build();
         mockMvc.perform(post("/api/v1/invocify/companies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company)))
@@ -86,7 +87,7 @@ public class CompanyControllerITTest {
 
     @Test
     public void createCompanyTest_unSuccessful_NoAddressNoName() throws Exception {
-        Company company = Company.builder().build();
+        CompanyRequest company = CompanyRequest.builder().build();
         mockMvc.perform(post("/api/v1/invocify/companies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(company)))
@@ -103,7 +104,7 @@ public class CompanyControllerITTest {
     @Test
     public void viewCompanyDefaultView() throws Exception {
 
-        Company company = Company.builder().name("Amazon")
+        CompanyRequest company = CompanyRequest.builder().name("Amazon")
                 .street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
@@ -114,7 +115,7 @@ public class CompanyControllerITTest {
                 .content(mapper.writeValueAsString(company)))
                 .andExpect(status().isCreated());
 
-        Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+        CompanyRequest company1 = CompanyRequest.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
                 .state("New York")
                 .postalCode("75036").build();
@@ -145,7 +146,7 @@ public class CompanyControllerITTest {
     @Test
     public void viewCompanyDefaultSimplifiedView() throws Exception {
 
-        Company company = Company.builder().name("Amazon")
+        CompanyRequest company = CompanyRequest.builder().name("Amazon")
                 .street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
@@ -156,7 +157,7 @@ public class CompanyControllerITTest {
                 .content(mapper.writeValueAsString(company)))
                 .andExpect(status().isCreated());
 
-        Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+        CompanyRequest company1 = CompanyRequest.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
                 .state("New York")
                 .postalCode("75036").build();
@@ -189,7 +190,7 @@ public class CompanyControllerITTest {
     @Test
     public void viewCompanyDetailedView() throws Exception {
 
-        Company company = Company.builder().name("Amazon").street("233 Siliconvalley")
+        CompanyRequest company = CompanyRequest.builder().name("Amazon").street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
                 .postalCode("75035").build();
@@ -198,7 +199,7 @@ public class CompanyControllerITTest {
                 .content(mapper.writeValueAsString(company)))
                 .andExpect(status().isCreated());
 
-        Company company1 = Company.builder().name("Apple").street("430 CreditValley")
+        CompanyRequest company1 = CompanyRequest.builder().name("Apple").street("430 CreditValley")
                 .city("New York")
                 .state("New York")
                 .postalCode("75036").build();

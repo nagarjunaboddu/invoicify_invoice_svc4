@@ -23,8 +23,10 @@ public class CompanyService extends InvocifyServiceHelper {
     private CompanyRepository companyRepository;
 
 
-    public Company createCompany(Company company) {
-        return companyRepository.save(company);
+    public Company createCompany(CompanyRequest companyRequest) {
+        Company companyEntity = new Company();
+        BeanUtils.copyProperties(companyRequest,companyEntity);
+        return companyRepository.save(companyEntity);
     }
 
 
