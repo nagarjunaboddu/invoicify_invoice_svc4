@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import com.invocify.invoice.entity.Company;
 import com.invocify.invoice.entity.Invoice;
 import com.invocify.invoice.entity.LineItem;
+import com.invocify.invoice.model.CompanyRequest;
 import com.invocify.invoice.model.InvoiceRequest;
 import com.invocify.invoice.model.InvoiceUpdateRequest;
 
@@ -71,6 +72,13 @@ public class HelperClass {
 
     public static Company requestCompany() {
         return Company.builder().name("Amazon").street("233 Siliconvalley")
+                .city("LA")
+                .state("California")
+                .postalCode("75035").build();
+    }
+
+    public static CompanyRequest requestCompanyRequest() {
+        return CompanyRequest.builder().name("Amazon").street("233 Siliconvalley")
                 .city("LA")
                 .state("California")
                 .postalCode("75035").build();

@@ -23,7 +23,6 @@ public class Company {
 
     @Id
     @GeneratedValue
-    @Hidden
     private UUID id;
     @NotBlank(message = "Name cannot be empty")
     private String name;
